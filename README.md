@@ -54,3 +54,16 @@ Sollte der Entwicklungsstand die Verbesserung erfüllen und keine unerwünschten
 - Commit-Nachrichten klein geschrieben
 - camelCase im Code
 - Variablen, Funktionen ... werden aussagekräftig benannt und ausgeschrieben
+
+---
+
+## 📦 Abhängigkeiten
+
+- Vue Router (Router) [https://router.vuejs.org/]
+  - ermöglicht verschiedene Routes in der SPA
+  - `/` Verlinkungen zu den Darstellungsvarianten
+  - `/first` erste Darstellungsvariante
+  - `/second` zweite Darstellungsvariante
+- Vuetify (Komponentenbibliothek) [https://next.vuetifyjs.com/en/]
+  - Komponenten werden verwendet als Gestaltungsgrundlage
+  - Komponenten basieren auf dem Material Design
