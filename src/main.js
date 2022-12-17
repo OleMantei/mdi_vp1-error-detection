@@ -1,5 +1,30 @@
 import { createApp } from "vue";
+import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
+import PageLinks from "./PageLinks.vue";
+import FirstVisualization from "./VisualizationFirst.vue";
+import SecondVisualization from "./VisualizationSecond.vue";
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: "/",
+      name: "PageLinks",
+      component: PageLinks,
+    },
+    {
+      path: "/first",
+      name: "FirstVisualization",
+      component: FirstVisualization,
+    },
+    {
+      path: "/second",
+      name: "SecondVisualization",
+      component: SecondVisualization,
+    },
+  ],
+});
 
 // Vuetify
 import "vuetify/styles";
@@ -12,4 +37,4 @@ const vuetify = createVuetify({
   directives,
 });
 
-createApp(App).use(vuetify).mount("#app");
+createApp(App).use(router).use(vuetify).mount("#app");

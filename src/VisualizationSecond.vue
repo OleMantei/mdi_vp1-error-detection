@@ -1,5 +1,5 @@
 <script></script>
 
 <template>
-  <h1>Second Visualization</h1>
+  <h1 class="text-h4">Darstellungsvariante 2</h1>
 </template>
