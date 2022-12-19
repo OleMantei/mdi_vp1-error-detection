@@ -7,7 +7,7 @@ Dieses Projekt verwendet Vue 3 (Clientseitiges JavaScript-Framework) [https://vu
 ## 🚀 Projekt aufsetzen
 
 Node.js [https://nodejs.org/] muss auf dem Entwicklungsgerät installiert sein.
-Als Paketmanager wird Yarn [https://yarnpkg.com/] verwendet.
+Als Paketmanager wird Yarn [https://yarnpkg.com/] verwendet (*Installation:* `npm install --global yarn`).
 Es sollten die empfohlenen Erweiterungen in VSCode (empfohlener Editor) hinzugefügt werden (siehe `.vscode/extensions.json`).
 
 **Befehle** \
