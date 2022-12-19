@@ -67,3 +67,5 @@ Sollte der Entwicklungsstand die Verbesserung erfüllen und keine unerwünschten
 - Vuetify (Komponentenbibliothek) [https://next.vuetifyjs.com/en/]
   - Komponenten werden verwendet als Gestaltungsgrundlage
   - Komponenten basieren auf dem Material Design
+- vue-chartjs (Chart Bibliothek) [https://vue-chartjs.org/]
+  - Graphen
