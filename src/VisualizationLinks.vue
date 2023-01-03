@@ -1,4 +1,16 @@
-<script></script>
+<script>
+// TODO: remove example
+import {
+  getFilteredExpensesActual,
+  getFilteredExpensesPlanned,
+  getFilteredTotalDifferenceExpensesActualExpensesPlanned,
+  getFilteredPercentageDifferenceExpensesActualExpensesPlanned,
+} from "./data/dataService";
+console.log(getFilteredExpensesPlanned());
+console.log(getFilteredExpensesActual());
+console.log(getFilteredTotalDifferenceExpensesActualExpensesPlanned());
+console.log(getFilteredPercentageDifferenceExpensesActualExpensesPlanned());
+</script>
 
 <template>
   <p class="font-weight-black">Darstellungsvarianten</p>

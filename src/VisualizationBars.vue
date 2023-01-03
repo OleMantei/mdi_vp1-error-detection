@@ -1,5 +1,6 @@
 <script>
 import AppContainer from "./components/AppContainer.vue";
+// TODO: import needed data as seen in VisualizationLinks Component
 export default {
   name: "VisualizationBars",
   components: {
