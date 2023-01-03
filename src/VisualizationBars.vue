@@ -10,6 +10,16 @@ export default {
 
 <template>
   <AppContainer>
-    <h1 class="text-h4">Darstellungsvariante Balken</h1>
+    <div class="bars-wrapper">
+      <p class="text-h6 bg-grey h-100 text-center pa-2">
+        🚧 Darstellungsvariante Balken
+      </p>
+    </div>
   </AppContainer>
 </template>
+
+<style>
+.bars-wrapper {
+  height: 100%;
+}
+</style>

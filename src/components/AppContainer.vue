@@ -1,9 +1,30 @@
+<script>
+import FilterBar from "./FilterBar.vue";
+export default {
+  name: "AppContainer",
+  components: {
+    FilterBar,
+  },
+};
+</script>
+
 <template>
-  <v-layout>
-    <v-app-bar color="blue" density="compact">
-      <v-app-bar-title>Haushaltsdaten</v-app-bar-title>
-    </v-app-bar>
-    <v-main></v-main>
-  </v-layout>
-  <slot></slot>
+  <div class="d-flex flex-column justify-start" style="min-height: 100vh">
+    <div>
+      <v-layout>
+        <v-app-bar color="blue">
+          <v-app-bar-title>👷‍♂️ App-Leiste</v-app-bar-title>
+        </v-app-bar>
+        <v-main></v-main>
+      </v-layout>
+    </div>
+    <div class="d-flex flex-grow-1">
+      <div>
+        <FilterBar />
+      </div>
+      <div class="flex-grow-1 pa-5">
+        <slot></slot>
+      </div>
+    </div>
+  </div>
 </template>
