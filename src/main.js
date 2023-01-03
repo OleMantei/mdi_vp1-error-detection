@@ -1,27 +1,27 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
-import PageLinks from "./PageLinks.vue";
-import FirstVisualization from "./VisualizationFirst.vue";
-import SecondVisualization from "./VisualizationSecond.vue";
+import VisualizationLinks from "./VisualizationLinks.vue";
+import VisualizationBars from "./VisualizationBars.vue";
+import VisualizationBubbles from "./VisualizationBubbles.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: "/",
-      name: "PageLinks",
-      component: PageLinks,
+      name: "VisualizationLinks",
+      component: VisualizationLinks,
     },
     {
-      path: "/first",
-      name: "FirstVisualization",
-      component: FirstVisualization,
+      path: "/xQcR3",
+      name: "VisualizationBars",
+      component: VisualizationBars,
     },
     {
-      path: "/second",
-      name: "SecondVisualization",
-      component: SecondVisualization,
+      path: "/c5sYf",
+      name: "VisualizationBubbles",
+      component: VisualizationBubbles,
     },
   ],
 });
