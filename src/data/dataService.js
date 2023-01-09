@@ -1,5 +1,13 @@
 import ExpensesActual from "./2022-06-30 126001_Aufwendungen-Ist.json";
 import ExpensesPlanned from "./2022-06-30 126001_Aufwendungen-Planung.json";
+import ColorScale from "color-scales";
+
+const nonDataItems = ["id", "title", "outlierScore", "outlierScoreColor"];
+let outlierColorScale = new ColorScale(1, 100, [
+  "#4caf50",
+  "#ffeb3b",
+  "#f44336",
+]);
 
 // TODO: Implement functionality which detects outlier
 const alwaysMarkedAsOutlier = ["5241004", "5261000", "5262000"];
@@ -14,10 +22,15 @@ const addOutlierInformationToEachItem = (dataItems) => {
         ? true
         : false
     ) {
-      item.outlier = true;
+      item.outlierScore = Math.round(
+        Math.floor(Math.random() * (100 / 3)) + 200 / 3
+      );
     } else {
-      item.outlier = false;
+      item.outlierScore = Math.round(Math.floor(Math.random() * (200 / 3)));
     }
+    item.outlierScoreColor = outlierColorScale
+      .getColor(item.outlierScore)
+      .toHexString();
     items.push(item);
   }
   return items;
@@ -75,9 +88,11 @@ const getFilteredDifferenceExpensesActualExpensesPlanned = (type) => {
   for (var i = 0; i < filteredExpensesActual.length; i++) {
     let item = {};
     let id = filteredExpensesActual[i].id;
-    let title = filteredExpensesActual[i].title;
-    item.id = id;
-    item.title = title;
+
+    nonDataItems.forEach((element) => {
+      item[element] = filteredExpensesActual[i][element];
+    });
+
     let filteredExpensesPlannedObject = filteredExpensesPlanned.filter(
       (obj) => {
         return obj.id === id;
@@ -85,26 +100,26 @@ const getFilteredDifferenceExpensesActualExpensesPlanned = (type) => {
     );
 
     for (const [key, value] of Object.entries(filteredExpensesActual[i])) {
-      let filteredExpensesActualValue = value;
-      let filteredExpensesPlannedValue = filteredExpensesPlannedObject[0][key];
-      let calculatedDifference;
-      switch (type) {
-        case "total":
-          calculatedDifference =
-            filteredExpensesActualValue - filteredExpensesPlannedValue;
-          break;
-        case "percentage":
-          calculatedDifference =
-            ((filteredExpensesActualValue - filteredExpensesPlannedValue) /
-              filteredExpensesPlannedValue) *
-            100.0;
-          break;
-        default:
-          calculatedDifference = null;
-          break;
-      }
-
-      if (key !== "title" && key !== "id") {
+      if (!nonDataItems.includes(key)) {
+        let filteredExpensesActualValue = value;
+        let filteredExpensesPlannedValue =
+          filteredExpensesPlannedObject[0][key];
+        let calculatedDifference;
+        switch (type) {
+          case "total":
+            calculatedDifference =
+              filteredExpensesActualValue - filteredExpensesPlannedValue;
+            break;
+          case "percentage":
+            calculatedDifference =
+              ((filteredExpensesActualValue - filteredExpensesPlannedValue) /
+                filteredExpensesPlannedValue) *
+              100.0;
+            break;
+          default:
+            calculatedDifference = null;
+            break;
+        }
         item[key] = calculatedDifference;
       }
     }
