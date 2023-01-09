@@ -6,10 +6,33 @@ import {
   getFilteredTotalDifferenceExpensesActualExpensesPlanned,
   getFilteredPercentageDifferenceExpensesActualExpensesPlanned,
 } from "./data/dataService";
-console.log(getFilteredExpensesPlanned());
-console.log(getFilteredExpensesActual());
-console.log(getFilteredTotalDifferenceExpensesActualExpensesPlanned());
-console.log(getFilteredPercentageDifferenceExpensesActualExpensesPlanned());
+import {
+  sortDataItemsByTitle,
+  sortDataItemsById,
+  sortDataItemsByOutlier,
+} from "./data/sortingRule";
+console.log("FilteredExpensesActual", getFilteredExpensesActual());
+console.log("FilteredExpensesPlanned", getFilteredExpensesPlanned());
+console.log(
+  "FilteredTotalDifferenceExpensesActualExpensesPlanned",
+  getFilteredTotalDifferenceExpensesActualExpensesPlanned()
+);
+console.log(
+  "FilteredPercentageDifferenceExpensesActualExpensesPlanned",
+  getFilteredPercentageDifferenceExpensesActualExpensesPlanned()
+);
+console.log(
+  "sortDataItemsByTitle",
+  sortDataItemsByTitle(getFilteredExpensesPlanned())
+);
+console.log(
+  "sortDataItemsById",
+  sortDataItemsById(getFilteredExpensesPlanned())
+);
+console.log(
+  "sortDataItemsByOutlier",
+  sortDataItemsByOutlier(getFilteredExpensesPlanned())
+);
 </script>
 
 <template>

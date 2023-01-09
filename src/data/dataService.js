@@ -1,6 +1,28 @@
 import ExpensesActual from "./2022-06-30 126001_Aufwendungen-Ist.json";
 import ExpensesPlanned from "./2022-06-30 126001_Aufwendungen-Planung.json";
 
+// TODO: Implement functionality which detects outlier
+const alwaysMarkedAsOutlier = ["5241004", "5261000", "5262000"];
+const outlierProbability = 0.15;
+const addOutlierInformationToEachItem = (dataItems) => {
+  let items = [];
+  for (var i = 0; i < dataItems.length; i++) {
+    let item = { ...dataItems[i] };
+    if (
+      alwaysMarkedAsOutlier.includes(dataItems[i].id) |
+      (Math.random() < outlierProbability)
+        ? true
+        : false
+    ) {
+      item.outlier = true;
+    } else {
+      item.outlier = false;
+    }
+    items.push(item);
+  }
+  return items;
+};
+
 // TODO: Delete when filtering is implemented
 const sampleFilteredItems = [
   "5241004",
@@ -9,35 +31,32 @@ const sampleFilteredItems = [
   "5262000",
   "5271000",
 ];
+const getFilteredItems = (dataItems) => {
+  let items = [];
+  for (var i = 0; i < dataItems.length; i++) {
+    if (sampleFilteredItems.includes(dataItems[i].id)) {
+      items.push(dataItems[i]);
+    }
+  }
+  return items;
+};
 
 export const getExpensesActual = () => {
-  return ExpensesActual;
+  return addOutlierInformationToEachItem(ExpensesActual);
 };
 
 export const getExpensesPlanned = () => {
-  return ExpensesPlanned;
+  return addOutlierInformationToEachItem(ExpensesPlanned);
 };
 
 // TODO: Filter data with FilterBar
 export const getFilteredExpensesActual = () => {
-  let items = [];
-  for (var i = 0; i < ExpensesActual.length; i++) {
-    if (sampleFilteredItems.includes(ExpensesActual[i].id)) {
-      items.push(ExpensesActual[i]);
-    }
-  }
-  return items;
+  return getFilteredItems(getExpensesActual());
 };
 
 // TODO: Filter data with FilterBar
 export const getFilteredExpensesPlanned = () => {
-  let items = [];
-  for (var i = 0; i < ExpensesPlanned.length; i++) {
-    if (sampleFilteredItems.includes(ExpensesPlanned[i].id)) {
-      items.push(ExpensesPlanned[i]);
-    }
-  }
-  return items;
+  return getFilteredItems(getExpensesPlanned());
 };
 
 export const getFilteredTotalDifferenceExpensesActualExpensesPlanned = () => {
