@@ -8,6 +8,6 @@ export const sortDataItemsById = (dataItems) => {
 
 export const sortDataItemsByOutlier = (dataItems) => {
   return dataItems.sort(function (a, b) {
-    return Number(b.outlier) - Number(a.outlier);
+    return b.outlierScore - a.outlierScore;
   });
 };
