@@ -3,11 +3,11 @@ import ExpensesPlanned from "./2022-06-30 126001_Aufwendungen-Planung.json";
 
 // TODO: Delete when filtering is implemented
 const sampleFilteredItems = [
-  "5241004 So. Bewirtschaftungsk. der Grst.",
-  "5251000 Haltung von Fahrzeugen",
-  "5261000 Dienst- u.Schutzkleidung",
-  "5262000 Aus- und Fortbildung, Umschulung",
-  "5271000 Beson. Vwaltungs-u Betriebsaufw.",
+  "5241004",
+  "5251000",
+  "5261000",
+  "5262000",
+  "5271000",
 ];
 
 export const getExpensesActual = () => {
@@ -22,7 +22,7 @@ export const getExpensesPlanned = () => {
 export const getFilteredExpensesActual = () => {
   let items = [];
   for (var i = 0; i < ExpensesActual.length; i++) {
-    if (sampleFilteredItems.includes(ExpensesActual[i].title)) {
+    if (sampleFilteredItems.includes(ExpensesActual[i].id)) {
       items.push(ExpensesActual[i]);
     }
   }
@@ -33,7 +33,7 @@ export const getFilteredExpensesActual = () => {
 export const getFilteredExpensesPlanned = () => {
   let items = [];
   for (var i = 0; i < ExpensesPlanned.length; i++) {
-    if (sampleFilteredItems.includes(ExpensesPlanned[i].title)) {
+    if (sampleFilteredItems.includes(ExpensesPlanned[i].id)) {
       items.push(ExpensesPlanned[i]);
     }
   }
@@ -55,11 +55,13 @@ const getFilteredDifferenceExpensesActualExpensesPlanned = (type) => {
   let filteredExpensesDifference = [];
   for (var i = 0; i < filteredExpensesActual.length; i++) {
     let item = {};
+    let id = filteredExpensesActual[i].id;
     let title = filteredExpensesActual[i].title;
+    item.id = id;
     item.title = title;
     let filteredExpensesPlannedObject = filteredExpensesPlanned.filter(
       (obj) => {
-        return obj.title === title;
+        return obj.id === id;
       }
     );
 
@@ -83,7 +85,7 @@ const getFilteredDifferenceExpensesActualExpensesPlanned = (type) => {
           break;
       }
 
-      if (key !== "title") {
+      if (key !== "title" && key !== "id") {
         item[key] = calculatedDifference;
       }
     }
