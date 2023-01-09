@@ -1,7 +1,13 @@
 import ExpensesActual from "./2022-06-30 126001_Aufwendungen-Ist.json";
 import ExpensesPlanned from "./2022-06-30 126001_Aufwendungen-Planung.json";
+import ColorScale from "color-scales";
 
-const nonDataItems = ["id", "title", "outlierScore"];
+const nonDataItems = ["id", "title", "outlierScore", "outlierScoreColor"];
+let outlierColorScale = new ColorScale(1, 100, [
+  "#4caf50",
+  "#ffeb3b",
+  "#f44336",
+]);
 
 // TODO: Implement functionality which detects outlier
 const alwaysMarkedAsOutlier = ["5241004", "5261000", "5262000"];
@@ -22,6 +28,9 @@ const addOutlierInformationToEachItem = (dataItems) => {
     } else {
       item.outlierScore = Math.round(Math.floor(Math.random() * (200 / 3)));
     }
+    item.outlierScoreColor = outlierColorScale
+      .getColor(item.outlierScore)
+      .toHexString();
     items.push(item);
   }
   return items;
