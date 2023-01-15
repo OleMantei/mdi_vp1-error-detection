@@ -1,6 +1,6 @@
 <script>
 import AppContainer from "./components/AppContainer.vue";
-import { Bar, Scatter } from 'vue-chartjs'
+import { Scatter } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ScatterController, PointElement} from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ScatterController, PointElement)
@@ -10,24 +10,24 @@ export default {
   name: "VisualizationBars",
   components: {
     AppContainer,
-    Bar, 
     Scatter
 },
 
   data() {
     return {
-      chartDataScatter: {
+      chartDataScatter1: {
           datasets: [{
             label: 'Data',
             borderWidth: 1,
 
-            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 3,y: 1,}, {x: 4,y: 12,},{x: 5,y: -2,},{x: 6,y: -1,},{x: 7,y: -9,},{x: 8,y: 4,}],
+            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 5,y: -2,}, {x: 6,y: -1,},{x: 7,y: -9,}, {x: 8,y: 4,}],
             radius: [9],
             backgroundColor: ['#1ed44e'],
             borderColor: ['#1ed44e'],
             fill: [true],
           }]
         },
+
         chartOptionsScatter: {
           scales: {
           x: {
@@ -36,8 +36,12 @@ export default {
             }
           },
           y: {
+            ticks: {
+              display: false,               
+            },
             grid: {
               display: false,
+              drawTicks: false,
             }
           },
           },
@@ -48,7 +52,18 @@ export default {
           maintainAspectRatio: false
         },
       
-      
+        chartDataScatter2: {
+          datasets: [{
+            label: 'Data',
+            borderWidth: 1,
+
+            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 3,y: 1,}, {x: 4,y: 12,},{x: 5,y: -2,},{x: 6,y: -1,},{x: 7,y: -9,},{x: 8,y: 4,}],
+            radius: [9],
+            backgroundColor: ['#1ed44e', '#aa00000', '#1ed44e','#1ed44e','#1ed44e','#1ed44e','#1ed44e','#1ed44e'],
+            borderColor: ['#1ed44e'],
+            fill: [true],
+          }]
+        },
 
 
 
@@ -101,17 +116,17 @@ export default {
   <AppContainer>
     <div class="wrapper">
       <div id="main-chart">
-        <Bar
-          id="barChartTest"
-          :options="chartOptionsBar"
-          :data="chartDataBar"
+        <Scatter
+          id="scatterChartTest"
+          :options="chartOptionsScatter"
+          :data="chartDataScatter1"
         />
       </div>
       <div id="secondary-chart">
         <Scatter
-        id="scatterChartTest"
-        :options="chartOptionsScatter"
-        :data="chartDataScatter"
+          id="scatterChartTest"
+          :options="chartOptionsScatter"
+          :data="chartDataScatter2"
         />
       </div>
     </div>
@@ -119,15 +134,26 @@ export default {
 </template>
 
 <style>
+
+.flex-grow-1 {
+background-color: #F8F8FB;
+}
 .wrapper {
   height: 100%;
+  background-color: #F8F8FB;
 }
 
 #main-chart {
-  height: 60vh;
+  height: 50vh;
+  width: 100%;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  margin-bottom: 30px;
 }
 
 #secondary-chart {
-  height: 40vh;
+  height: 30vh;
+  width: 100%;
+  background-color: #FFFFFF;
 }
 </style>
