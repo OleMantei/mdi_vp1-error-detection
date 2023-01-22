@@ -15,38 +15,68 @@ export default {
 
   data() {
     return {
+      /*
+      Customisation-options for the imported data and how it is displayed
+      */  
       chartDataScatter1: {
           datasets: [{
-            label: 'Data',
+            label: 'No Problems detected',
             borderWidth: 1,
-
-            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 5,y: -2,}, {x: 6,y: -1,},{x: 7,y: -9,}, {x: 8,y: 4,}],
+            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 8,y: 4,}],
             radius: [9],
-            backgroundColor: ['#1ed44e'],
-            borderColor: ['#1ed44e'],
-            fill: [true],
-          }]
+            backgroundColor: ['#61B544'],
+            borderColor: ['#61B544'],      
+          },
+        {
+          label: "Outlier",
+          borderWidth: 1,
+          data: [{x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
+          radius: [9],
+          backgroundColor: ['#EB5A5A'],
+          borderColor: ['#EB5A5A'],
+
+        }]
         },
 
+        /*
+        Customisation-options for the scatter graphs
+        */  
         chartOptionsScatter: {
+          plugins: {
+            legend: {
+    	        display: false //disables the legend at the top
+            }
+          },       
           scales: {
           x: {
-            grid: {
+            ticks: {
               display: false,
+            },
+            grid: {
+              display: true,
+              drawBorder: false,
+              color: function(context) {
+                if (context.tick.value == 2) {
+                  return ChartJS.defaults.borderColor;
+                }
+              }
             }
           },
           y: {
             ticks: {
-              display: false,               
+              display: false, //diables the numbering of the y-axis   
             },
             grid: {
-              display: false,
-              drawTicks: false,
+              display: true,
+              drawBorder: false,
+              lineWidth: 2,
+              color: function(context) {
+                if (context.tick.value == 0) { //only display the line for 0 on the y-axis...
+                  return ChartJS.defaults.borderColor; //... in the same color as the border
+                }
+              }
             }
           },
-          },
-          legend: {
-            display: false
           },
           responsive: true,
           maintainAspectRatio: false
@@ -59,9 +89,8 @@ export default {
 
             data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 3,y: 1,}, {x: 4,y: 12,},{x: 5,y: -2,},{x: 6,y: -1,},{x: 7,y: -9,},{x: 8,y: 4,}],
             radius: [9],
-            backgroundColor: ['#1ed44e', '#aa00000', '#1ed44e','#1ed44e','#1ed44e','#1ed44e','#1ed44e','#1ed44e'],
-            borderColor: ['#1ed44e'],
-            fill: [true],
+            backgroundColor: ['#61B544'],
+            borderColor: ['#61B544'],
           }]
         },
 
@@ -107,6 +136,7 @@ export default {
       }
     }
   }
+  
 }
 
 </script>
@@ -116,6 +146,12 @@ export default {
   <AppContainer>
     <div class="wrapper">
       <div id="main-chart">
+        <div class="headline">
+          <h3>Alle ausgewählten Ausgabenbereiche - generelle Abweichung</h3>
+          <v-btn class="ma-2" color="#2196F3">
+            <v-icon>fas fa-list</v-icon>
+          </v-btn>
+        </div>
         <Scatter
           id="scatterChartTest"
           :options="chartOptionsScatter"
@@ -123,6 +159,7 @@ export default {
         />
       </div>
       <div id="secondary-chart">
+        <h3>Auswahl - Abweichung zu den vorherigen Jahren</h3>
         <Scatter
           id="scatterChartTest"
           :options="chartOptionsScatter"
@@ -133,14 +170,22 @@ export default {
   </AppContainer>
 </template>
 
-<style>
 
+
+<style>
 .flex-grow-1 {
-background-color: #F8F8FB;
+background-color: #F4F4F4;
 }
+
+.headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .wrapper {
   height: 100%;
-  background-color: #F8F8FB;
+  background-color: #F4F4F4;
 }
 
 #main-chart {
@@ -148,12 +193,15 @@ background-color: #F8F8FB;
   width: 100%;
   background-color: #FFFFFF;
   border-radius: 10px;
-  margin-bottom: 30px;
+  padding: 30px;
+  margin-bottom: 70px;
 }
 
 #secondary-chart {
   height: 30vh;
   width: 100%;
   background-color: #FFFFFF;
+  border-radius: 10px;
+  padding: 30px;
 }
 </style>
