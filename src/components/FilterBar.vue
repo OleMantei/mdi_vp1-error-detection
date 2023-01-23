@@ -10,7 +10,7 @@ import {
   sortDataItemsById,
   sortDataItemsByOutlier,
 } from "../data/sortingRule";
-import { searchDataItems } from "../data/searchService";
+import { searchDataItems } from "../data/searchRule";
 export default {
   name: "FilterBar",
   data: function () {
