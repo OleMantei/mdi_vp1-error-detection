@@ -16,7 +16,7 @@ export default {
   data() {
     return {
       /*
-      Customisation-options for the imported data and how it is displayed
+      Data for the main chart
       */  
       chartDataScatter1: {
           datasets: [{
@@ -42,6 +42,33 @@ export default {
           barThickness: 1,
         },
       ]
+        },
+        /*
+        Data for the bottom chart
+        */  
+        chartDataScatter2: {
+          datasets: [{
+            label: 'No Problems detected',
+            borderWidth: 1,
+            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
+            radius: [9],
+            backgroundColor: ['#61B544'],
+            borderColor: ['#61B544'],
+          },
+          {
+          label: "Outlier",
+          borderWidth: 1,
+          data: [{x: 8,y: 4,}],
+          radius: [9],
+          backgroundColor: ['#EB5A5A'],
+          borderColor: ['#EB5A5A'],
+          }, 
+          {
+          type: 'bar',
+          data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 8,y: 4,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
+          barThickness: 1,
+          },
+        ]
         },
 
         /*
@@ -87,24 +114,6 @@ export default {
           responsive: true,
           maintainAspectRatio: false
         },
-      
-        chartDataScatter2: {
-          datasets: [{
-            label: 'Data',
-            borderWidth: 1,
-
-            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 3,y: 1,}, {x: 4,y: 12,},{x: 5,y: -2,},{x: 6,y: -1,},{x: 7,y: -9,},{x: 8,y: 4,}],
-            radius: [9],
-            backgroundColor: ['#61B544'],
-            borderColor: ['#61B544'],
-          },
-          {
-          type: 'bar',
-          data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 8,y: 4,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
-          barThickness: 1,
-          },
-        ]
-        },
     }
   }
 
@@ -130,7 +139,12 @@ export default {
         />
       </div>
       <div id="secondary-chart">
-        <h3>Auswahl - Abweichung zu den vorherigen Jahren</h3>
+        <div class="headline">
+          <h3>Auswahl - Abweichung zu den vorherigen Jahren</h3>
+          <v-btn class="ma-2" color="#2196F3">
+            <v-icon>fas fa-list</v-icon>
+          </v-btn>
+        </div>
         <Scatter
           id="scatterChartTest"
           :options="chartOptionsScatter"
