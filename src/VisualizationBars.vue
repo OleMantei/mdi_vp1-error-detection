@@ -48,11 +48,8 @@ export default {
         Customisation-options for the scatter graphs
         */  
         chartOptionsScatter: {
-          events: ["mouseout", "click", "touchstart", "touchmove", "touchend"], //disables standard hover effect
+          events: ["mouseout", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
           plugins: {
-            chartAreaBorder: {
-              borderColor: 'red',
-            },
             legend: {
     	        display: false //disables the legend at the top
             }
@@ -155,6 +152,7 @@ background-color: #F4F4F4;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 3vh;
 }
 
 .wrapper {
@@ -166,16 +164,16 @@ background-color: #F4F4F4;
   height: 50vh;
   width: 100%;
   background-color: #FFFFFF;
-  border-radius: 10px;
-  padding: 30px;
-  margin-bottom: 70px;
+  border-radius: 1vw;
+  padding: 2vw;
+  margin-bottom: 5vh;
 }
 
 #secondary-chart {
   height: 30vh;
   width: 100%;
   background-color: #FFFFFF;
-  border-radius: 10px;
-  padding: 30px;
+  border-radius: 1vw;
+  padding: 2vw;
 }
 </style>
