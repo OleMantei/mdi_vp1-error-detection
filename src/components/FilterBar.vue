@@ -14,27 +14,28 @@ export default {
   name: "FilterBar",
   data: function () {
     return {
+      select: "Ausreißer",
       filteredExpensesActual: getFilteredExpensesActual(),
       filteredExpensesPlanned: getFilteredExpensesPlanned(),
       filteredTotalDifferenceExpensesActualExpensesPlanned:
         getFilteredTotalDifferenceExpensesActualExpensesPlanned(),
       filteredPercentageDifferenceExpensesActualExpensesPlanned:
         getFilteredPercentageDifferenceExpensesActualExpensesPlanned(),
-      selectedFiltering: "unsorted",
+      selectedFiltering: "Ausreißer",
     };
   },
   computed: {
     filteredExpensesActualItems: function () {
       var selectedFiltering = this.selectedFiltering;
 
-      if (selectedFiltering === "title") {
-        return sortDataItemsByTitle(this.filteredExpensesActual);
+      if (selectedFiltering === "Ausreißer") {
+        return sortDataItemsByOutlier(this.filteredExpensesActual);
       }
-      if (selectedFiltering === "id") {
+      if (selectedFiltering === "ID") {
         return sortDataItemsById(this.filteredExpensesActual);
       }
-      if (selectedFiltering === "outlier") {
-        return sortDataItemsByOutlier(this.filteredExpensesActual);
+      if (selectedFiltering === "Titel") {
+        return sortDataItemsByTitle(this.filteredExpensesActual);
       }
       return getFilteredExpensesActual();
     },
@@ -44,112 +45,59 @@ export default {
 
 <template>
   <div class="filterbar-wrapper bg-blue">
-    <p class="text-h6 bg-blue text-center pa-2">🚧 Filter Seitenleiste</p>
-    <hr />
-    <div class="pt-4 px-2">
-      <label class="mr-2"
-        ><input
-          v-model="selectedFiltering"
-          class="mr-1"
-          type="radio"
-          value="unsorted"
-        />unsorted</label
-      >
-      <label class="mr-2"
-        ><input
-          v-model="selectedFiltering"
-          class="mr-1"
-          type="radio"
-          value="title"
-        />title</label
-      >
-      <label class="mr-2"
-        ><input
-          v-model="selectedFiltering"
-          class="mr-1"
-          type="radio"
-          value="id"
-        />id</label
-      >
-      <label class="mr-2"
-        ><input
-          v-model="selectedFiltering"
-          class="mr-1"
-          type="radio"
-          value="outlier"
-        />outlier</label
-      >
+    <div class="pt-4 px-4">
+      <v-text-field
+        label="Suche"
+        hide-details="auto"
+        variant="underlined"
+        class="mb-4"
+      ></v-text-field>
+      <v-select
+        v-model="selectedFiltering"
+        label="Sortierung"
+        :items="['Ausreißer', 'ID', 'Titel']"
+        variant="underlined"
+      ></v-select>
     </div>
-    <div class="py-4 px-2">
-      <p class="text-subtitle-1">Aufwendungen IST</p>
-      <p class="text-caption font-italic mb-3">
-        (filtered, sorted by {{ selectedFiltering }})
-      </p>
+    <v-list select-strategy="multiple" bg-color="transparent">
       <div
         v-for="(item, index) in filteredExpensesActualItems"
         :key="{ index }"
-        class="mb-2"
       >
-        <p class="text-body-2">{{ item.id }} {{ item.title }}</p>
-        <span class="text-caption" :style="{ color: item.outlierScoreColor }"
-          >Ausreißer Score: {{ item.outlierScore }}</span
-        >
-        <span class="text-caption"> | z.B. 2010: {{ item["2010"] }}</span>
+        <v-list-item :value="item.id" class="px-1" variant="plain">
+          <template #prepend="{ isActive }">
+            <v-list-item-action start>
+              <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+            </v-list-item-action>
+          </template>
+          <v-tooltip
+            :text="`${item.id} ${item.title}`"
+            open-delay="1200"
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <v-list-item-title v-bind="props"
+                >{{ item.id }} {{ item.title }}</v-list-item-title
+              >
+            </template>
+          </v-tooltip>
+          <template #append>
+            <v-tooltip :text="`Ausreißerscore: ${item.outlierScore}%`">
+              <template #activator="{ props }">
+                <v-btn
+                  :color="item.outlierScoreColor"
+                  icon="mdi-information"
+                  variant="text"
+                  alt="moin"
+                  v-bind="props"
+                >
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </template>
+        </v-list-item>
       </div>
-    </div>
-    <hr />
-    <div class="py-4 px-2">
-      <p class="text-subtitle-1">Aufwendungen PLANUNG</p>
-      <p class="text-caption font-italic mb-3">(filtered, unsorted)</p>
-      <div
-        v-for="(item, index) in filteredExpensesPlanned"
-        :key="{ index }"
-        class="mb-2"
-      >
-        <p class="text-body-2">{{ item.id }} {{ item.title }}</p>
-        <span class="text-caption" :style="{ color: item.outlierScoreColor }"
-          >Ausreißer Score: {{ item.outlierScore }}</span
-        >
-        <span class="text-caption"> | z.B. 2010: {{ item["2010"] }}</span>
-      </div>
-    </div>
-    <hr />
-    <div class="py-4 px-2">
-      <p class="text-subtitle-1">Aufwendungen Differenz Total</p>
-      <p class="text-caption font-italic mb-3">(filtered, unsorted)</p>
-      <div
-        v-for="(
-          item, index
-        ) in filteredTotalDifferenceExpensesActualExpensesPlanned"
-        :key="{ index }"
-        class="mb-2"
-      >
-        <p class="text-body-2">{{ item.id }} {{ item.title }}</p>
-        <span class="text-caption" :style="{ color: item.outlierScoreColor }"
-          >Ausreißer Score: {{ item.outlierScore }}</span
-        >
-        <span class="text-caption"> | z.B. 2010: {{ item["2010"] }}</span>
-      </div>
-    </div>
-    <hr />
-    <div class="py-4 px-2">
-      <p class="text-subtitle-1">Aufwendungen Differenz Prozent</p>
-      <p class="text-caption font-italic mb-3">(filtered, unsorted)</p>
-      <div
-        v-for="(
-          item, index
-        ) in filteredPercentageDifferenceExpensesActualExpensesPlanned"
-        :key="{ index }"
-        class="mb-2"
-      >
-        <p class="text-body-2">{{ item.id }} {{ item.title }}</p>
-        <span class="text-caption" :style="{ color: item.outlierScoreColor }"
-          >Ausreißer Score: {{ item.outlierScore }}</span
-        >
-        <span class="text-caption"> | z.B. 2010: {{ item["2010"] }}</span>
-      </div>
-    </div>
-    <hr />
+    </v-list>
   </div>
 </template>
 

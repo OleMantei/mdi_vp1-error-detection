@@ -13,7 +13,7 @@ export default {
     <div>
       <v-layout>
         <v-app-bar color="blue">
-          <v-app-bar-title>👷‍♂️ App-Leiste</v-app-bar-title>
+          <v-app-bar-title>Haushaltsdaten Lübeck</v-app-bar-title>
         </v-app-bar>
         <v-main></v-main>
       </v-layout>
