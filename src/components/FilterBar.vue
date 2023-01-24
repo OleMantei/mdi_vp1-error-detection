@@ -1,10 +1,6 @@
 <script>
-import {
-  getFilteredExpensesActual,
-  getFilteredExpensesPlanned,
-  getFilteredTotalDifferenceExpensesActualExpensesPlanned,
-  getFilteredPercentageDifferenceExpensesActualExpensesPlanned,
-} from "../data/dataService";
+import { mapState } from "pinia";
+import { useDataStore } from "../stores/DataStore";
 import {
   sortDataItemsByTitle,
   sortDataItemsById,
@@ -15,42 +11,41 @@ export default {
   name: "FilterBar",
   data: function () {
     return {
-      select: "Ausreißer",
-      filteredExpensesActual: getFilteredExpensesActual(),
-      filteredExpensesPlanned: getFilteredExpensesPlanned(),
-      filteredTotalDifferenceExpensesActualExpensesPlanned:
-        getFilteredTotalDifferenceExpensesActualExpensesPlanned(),
-      filteredPercentageDifferenceExpensesActualExpensesPlanned:
-        getFilteredPercentageDifferenceExpensesActualExpensesPlanned(),
       selectedFiltering: "Ausreißer",
       search: "",
-      selectedItems: [],
     };
   },
   computed: {
+    ...mapState(useDataStore, ["expensesActual"]),
+    ...mapState(useDataStore, ["expensesPlanned"]),
+    ...mapState(useDataStore, ["totalDifferenceExpensesActualExpensesPlanned"]),
+    ...mapState(useDataStore, [
+      "percentageDifferenceExpensesActualExpensesPlanned",
+    ]),
+    ...mapState(useDataStore, ["checkedDataItems"]),
     listItems: function () {
       var searchTerm = this.search;
       var selectedFiltering = this.selectedFiltering;
 
       if (selectedFiltering === "Ausreißer") {
         return searchDataItems(
-          sortDataItemsByOutlier(this.filteredExpensesActual),
+          sortDataItemsByOutlier(this.expensesActual),
           searchTerm
         );
       }
       if (selectedFiltering === "ID") {
         return searchDataItems(
-          sortDataItemsById(this.filteredExpensesActual),
+          sortDataItemsById(this.expensesActual),
           searchTerm
         );
       }
       if (selectedFiltering === "Titel") {
         return searchDataItems(
-          sortDataItemsByTitle(this.filteredExpensesActual),
+          sortDataItemsByTitle(this.expensesActual),
           searchTerm
         );
       }
-      return getFilteredExpensesActual();
+      return this.expensesActual();
     },
   },
 };
@@ -81,9 +76,17 @@ export default {
         class="px-1"
         variant="plain"
       >
-        <template #prepend="{ isActive }">
+        <template #prepend>
           <v-list-item-action start>
-            <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+            <v-checkbox-btn
+              v-model="expensesActual[index].checked"
+              :model-value="expensesActual[index].checked"
+              @change="
+                expensesActual[index].checked
+                  ? checkedDataItems.push(expensesActual[index].id)
+                  : checkedDataItems.pop(expensesActual[index].id)
+              "
+            ></v-checkbox-btn>
           </v-list-item-action>
         </template>
         <v-tooltip
