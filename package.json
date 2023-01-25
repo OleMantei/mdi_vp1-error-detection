@@ -13,9 +13,9 @@
   "dependencies": {
     "chart.js": "^4.1.1",
     "color-scales": "^3.0.2",
+    "pinia": "^2.0.29",
     "vue": "^3.2.45",
     "vue-chartjs": "^5.0.1",
-    "vue-router": "4",
     "vuetify": "^3.0.5"
   },
   "devDependencies": {
