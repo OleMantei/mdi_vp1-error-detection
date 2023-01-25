@@ -7,14 +7,19 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale,
 
 // TODO: import needed data as seen in FilterBar Component
 export default {
+  
   name: "VisualizationBars",
   components: {
     AppContainer,
     Scatter
+
+    
 },
 
   data() {
+    
     return {
+      years: ['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020'],
       /*
       Data for the main chart
       */  
@@ -114,6 +119,12 @@ export default {
           responsive: true,
           maintainAspectRatio: false
         },
+
+        yearsSlider: { label: '', val: 50, color: 'red', backgroundColor: 'blue', },
+        min: 2010,
+        max: 2020,
+        range: [2010, 2020],
+        
     }
   }
 
@@ -128,9 +139,6 @@ export default {
       <div id="main-chart">
         <div class="headline">
           <h3>Alle ausgewählten Ausgabenbereiche - generelle Abweichung</h3>
-          <v-btn class="ma-2" color="#2196F3">
-            <v-icon>fas fa-list</v-icon>
-          </v-btn>
         </div>
         <Scatter
           id="scatterChartTest"
@@ -141,9 +149,45 @@ export default {
       <div id="secondary-chart">
         <div class="headline">
           <h3>Auswahl - Abweichung zu den vorherigen Jahren</h3>
-          <v-btn class="ma-2" color="#2196F3">
-            <v-icon>fas fa-list</v-icon>
-          </v-btn>
+          <!-- Start Slider -->
+          <v-card 
+            id="yearsSlider"
+            flat
+          >
+            <v-range-slider
+              v-model="range"
+              :max="max"
+              :min="min"
+              :tick-labels="years"
+              hide-details
+              class="align-center"
+              color="blue" 
+            >
+              <template #append>
+                <v-text-field
+                  class="yearsText"
+                  :value="range[0]"
+                  disabled
+                  single-line
+                  hide-details
+                  type="number"
+                  style="width: 5vw"
+                  @change="$set(range, 0, $event)"
+                ></v-text-field>
+                <v-text-field
+                  class="yearsText"
+                  :value="range[1]"
+                  disabled
+                  single-line
+                  hide-details
+                  type="number"
+                  style="width: 5vw"
+                  @change="$set(range, 1, $event)"
+                ></v-text-field>
+              </template>
+          </v-range-slider>
+        </v-card>
+        <!-- End Slider -->
         </div>
         <Scatter
           id="scatterChartTest"
@@ -189,5 +233,19 @@ background-color: #F4F4F4;
   background-color: #FFFFFF;
   border-radius: 1vw;
   padding: 2vw;
+}
+
+#yearsSlider {
+  display: flex;
+  background-color: #FFF;
+  width: 30vw;
+  padding-left: 30px;
+}
+.yearsText input{
+  color: black !important;
+  font-weight: bold;
+  opacity: 1;
+  background-color: #FFF;
+  border-color: #FFF;
 }
 </style>
