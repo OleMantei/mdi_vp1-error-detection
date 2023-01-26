@@ -1,5 +1,9 @@
-<script></script>
+<script setup>
+import VisualizationBars from "./VisualizationBars.vue";
+import { useDataStore } from "./stores/DataStore";
+useDataStore();
+</script>
 
 <template>
-  <router-view></router-view>
+  <VisualizationBars />
 </template>
