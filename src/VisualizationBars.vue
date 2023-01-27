@@ -35,19 +35,6 @@ export default {
 
   data() {
     return {
-      years: [
-        "2010",
-        "2011",
-        "2012",
-        "2013",
-        "2014",
-        "2015",
-        "2016",
-        "2017",
-        "2018",
-        "2019",
-        "2020",
-      ],
       /*
       Data for the main chart
       */
@@ -201,16 +188,19 @@ export default {
 <template>
   <AppContainer>
     <div class="wrapper">
+      <!-- Start Top Scatterchart -->
       <div id="main-chart">
         <div class="headline">
           <h3>Alle ausgewählten Ausgabenbereiche - generelle Abweichung</h3>
         </div>
         <Scatter
-          id="scatterChartTest"
+          class="scatterChart"
           :options="chartOptionsScatter"
           :data="chartDataScatter1"
         />
       </div>
+      <!-- End Top Scatterchart -->
+      <!-- Start Bottom Scatterchart -->
       <div id="secondary-chart">
         <div class="headline">
           <h3>Auswahl - Abweichung zu den vorherigen Jahren</h3>
@@ -220,11 +210,11 @@ export default {
               v-model="range"
               :max="max"
               :min="min"
-              :tick-labels="years"
               hide-details
               class="align-center"
               color="blue"
             >
+              <!-- Start Slider Numbers-->
               <template #append>
                 <v-text-field
                   class="yearsText"
@@ -247,16 +237,19 @@ export default {
                   @change="$set(range, 1, $event)"
                 ></v-text-field>
               </template>
-            </v-range-slider>
-          </v-card>
-          <!-- End Slider -->
+              <!-- End Slider Numbers-->
+          </v-range-slider>
+        </v-card>
+        <!-- End Slider -->
+
         </div>
         <Scatter
-          id="scatterChartTest"
+          class="scatterChart"
           :options="chartOptionsScatter"
           :data="chartDataScatter2"
         />
       </div>
+      <!-- End Bottom Scatterchart -->
     </div>
   </AppContainer>
 </template>
