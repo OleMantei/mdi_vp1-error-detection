@@ -80,6 +80,7 @@ export const getFilteredPercentageDifferenceExpensesActualExpensesPlanned =
   () => {
     return getFilteredDifferenceExpensesActualExpensesPlanned("percentage");
   };
+  
 
 const getFilteredDifferenceExpensesActualExpensesPlanned = (type) => {
   let filteredExpensesActual = getFilteredExpensesActual();
