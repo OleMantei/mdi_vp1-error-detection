@@ -1,90 +1,125 @@
 <script>
 import AppContainer from "./components/AppContainer.vue";
-import { Scatter } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ScatterController, PointElement} from 'chart.js'
+import { Scatter } from "vue-chartjs";
+import { getFilteredTotalDifferenceExpensesActualExpensesPlanned } from "../src/data/dataService";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ScatterController,
+  PointElement,
+} from "chart.js";
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ScatterController, PointElement)
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ScatterController,
+  PointElement
+);
 
 // TODO: import needed data as seen in FilterBar Component
 export default {
-  
   name: "VisualizationBars",
   components: {
     AppContainer,
-    Scatter
-
-    
-},
+    Scatter,
+  },
 
   data() {
     return {
       /*
       Data for the main chart
-      */  
+      */
       chartDataScatter1: {
-          datasets: [{
-            label: 'No Problems detected',
+        datasets: [
+          {
+            label: "No Problems detected",
             borderWidth: 1,
-            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 8,y: 4,}],
+            data: this.parseData(),
             radius: [9],
-            backgroundColor: ['#61B544'],
-            borderColor: ['#61B544'],      
+            backgroundColor: ["#61B544"],
+            borderColor: ["#61B544"],
           },
-        {
-          label: "Outlier",
-          borderWidth: 1,
-          data: [{x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
-          radius: [9],
-          backgroundColor: ['#EB5A5A'],
-          borderColor: ['#EB5A5A'],
-
-        }, 
-        {
-          type: 'bar',
-          data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 8,y: 4,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
-          barThickness: 1,
-        },
-      ]
-        },
-        /*
+          {
+            label: "Outlier",
+            borderWidth: 1,
+            data: this.parseData(),
+            radius: [9],
+            backgroundColor: ["#EB5A5A"],
+            borderColor: ["#EB5A5A"],
+          },
+          {
+            type: "bar",
+            data: this.parseData(),
+            barThickness: 1,
+          },
+        ],
+      },
+      /*
         Data for the bottom chart
-        */  
-        chartDataScatter2: {
-          datasets: [{
-            label: 'No Problems detected',
+        */
+      chartDataScatter2: {
+        datasets: [
+          {
+            label: "No Problems detected",
             borderWidth: 1,
-            data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
+            data: [
+              { x: 1, y: 3 },
+              { x: 2, y: 1 },
+              { x: 5, y: -2 },
+              { x: 6, y: -1 },
+              { x: 3, y: 1 },
+              { x: 4, y: 12 },
+              { x: 7, y: -9 },
+            ],
             radius: [9],
-            backgroundColor: ['#61B544'],
-            borderColor: ['#61B544'],
+            backgroundColor: ["#61B544"],
+            borderColor: ["#61B544"],
           },
           {
-          label: "Outlier",
-          borderWidth: 1,
-          data: [{x: 8,y: 4,}],
-          radius: [9],
-          backgroundColor: ['#EB5A5A'],
-          borderColor: ['#EB5A5A'],
-          }, 
-          {
-          type: 'bar',
-          data: [{x: 1,y: 3,}, {x: 2,y: 1,}, {x: 5,y: -2,}, {x: 6,y: -1,}, {x: 8,y: 4,}, {x: 3,y: 1,}, {x: 4,y: 12,}, {x: 7,y: -9,}],
-          barThickness: 1,
+            label: "Outlier",
+            borderWidth: 1,
+            data: [{ x: 8, y: 4 }],
+            radius: [9],
+            backgroundColor: ["#EB5A5A"],
+            borderColor: ["#EB5A5A"],
           },
-        ]
-        },
+          {
+            type: "bar",
+            data: [
+              { x: 1, y: 3 },
+              { x: 2, y: 1 },
+              { x: 5, y: -2 },
+              { x: 6, y: -1 },
+              { x: 8, y: 4 },
+              { x: 3, y: 1 },
+              { x: 4, y: 12 },
+              { x: 7, y: -9 },
+            ],
+            barThickness: 1,
+          },
+        ],
+      },
 
-        /*
+      /*
         Customisation-options for the scatter graphs
-        */  
-        chartOptionsScatter: {
-          events: ["mouseout", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
-          plugins: {
-            legend: {
-    	        display: false //disables the legend at the top
-            }
-          },   
-          scales: {
+        */
+      chartOptionsScatter: {
+        events: ["mouseout", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
+        plugins: {
+          legend: {
+            display: false, //disables the legend at the top
+          },
+        },
+        scales: {
           x: {
             ticks: {
               display: false, // disables numbers at the bottom
@@ -94,42 +129,60 @@ export default {
             },
             border: {
               display: false, //disables border at the bottom
-            }
+            },
           },
           y: {
             ticks: {
-              display: false, //diables the numbering of the y-axis   
+              display: false, //diables the numbering of the y-axis
             },
             grid: {
               display: true,
               lineWidth: 2,
-              color: function(context) {
-                if (context.tick.value == 0) { //only display the line for 0 on the y-axis...
+              color: function (context) {
+                if (context.tick.value == 0) {
+                  //only display the line for 0 on the y-axis...
                   return ChartJS.defaults.borderColor; //... in the same color as the border
                 }
-              }
+              },
             },
             border: {
               display: false, //disables border at the left
-            }
+            },
           },
-          },
-          responsive: true,
-          maintainAspectRatio: false
         },
-
-        yearsSlider: { label: '', val: 50, color: 'red', backgroundColor: 'blue', },
-        min: 2010,
-        max: 2020,
-        range: [2010, 2020],
-        
-    }
-  }
-
-
-}
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+      yearsSlider: {
+        label: "",
+        val: 50,
+        color: "red",
+        backgroundColor: "blue",
+      },
+      min: 2010,
+      max: 2020,
+      range: [2010, 2020],
+    };
+  },
+  methods: {
+    parseData() {
+      const rawValues =
+        getFilteredTotalDifferenceExpensesActualExpensesPlanned("total");
+      let values = [];
+      rawValues.forEach((element) => {
+        for (let [key, value] of Object.entries(element)) {
+          if (key.length == 4 /*|| key == "title"*/) {
+            const xy = { x: Math.floor(key), y: value };
+            values.push(xy);
+          }
+        }
+      });
+      console.log(values);
+      return values;
+    },
+  },
+};
 </script>
-
 
 <template>
   <AppContainer>
@@ -151,10 +204,7 @@ export default {
         <div class="headline">
           <h3>Auswahl - Abweichung zu den vorherigen Jahren</h3>
           <!-- Start Slider -->
-          <v-card 
-            id="yearsSlider"
-            flat
-          >
+          <v-card id="yearsSlider" flat>
             <v-range-slider
               v-model="range"
               :max="max"
@@ -162,7 +212,7 @@ export default {
               :tick-labels="years"
               hide-details
               class="align-center"
-              color="blue" 
+              color="blue"
             >
               <!-- Start Slider Numbers-->
               <template #append>
@@ -191,6 +241,7 @@ export default {
           </v-range-slider>
         </v-card>
         <!-- End Slider -->
+
         </div>
         <Scatter
           class="scatterChart"
@@ -203,11 +254,9 @@ export default {
   </AppContainer>
 </template>
 
-
-
 <style>
 .flex-grow-1 {
-background-color: #F4F4F4;
+  background-color: #f4f4f4;
 }
 
 .headline {
@@ -219,13 +268,13 @@ background-color: #F4F4F4;
 
 .wrapper {
   height: 100%;
-  background-color: #F4F4F4;
+  background-color: #f4f4f4;
 }
 
 #main-chart {
   height: 50vh;
   width: 100%;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 1vw;
   padding: 2vw;
   margin-bottom: 5vh;
@@ -234,22 +283,22 @@ background-color: #F4F4F4;
 #secondary-chart {
   height: 30vh;
   width: 100%;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 1vw;
   padding: 2vw;
 }
 
 #yearsSlider {
   display: flex;
-  background-color: #FFF;
+  background-color: #fff;
   width: 30vw;
   padding-left: 30px;
 }
-.yearsText input{
+.yearsText input {
   color: black !important;
   font-weight: bold;
   opacity: 1;
-  background-color: #FFF;
-  border-color: #FFF;
+  background-color: #fff;
+  border-color: #fff;
 }
 </style>
