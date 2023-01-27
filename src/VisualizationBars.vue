@@ -193,6 +193,7 @@ export default {
       console.log(values);
       return values;
     },
+    xLabel() {},
   },
 };
 </script>
