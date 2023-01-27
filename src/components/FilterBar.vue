@@ -1,10 +1,6 @@
 <script>
-import {
-  getFilteredExpensesActual,
-  getFilteredExpensesPlanned,
-  getFilteredTotalDifferenceExpensesActualExpensesPlanned,
-  getFilteredPercentageDifferenceExpensesActualExpensesPlanned,
-} from "../data/dataService";
+import { mapState } from "pinia";
+import { useDataStore } from "../stores/DataStore";
 import {
   sortDataItemsByTitle,
   sortDataItemsById,
@@ -15,42 +11,162 @@ export default {
   name: "FilterBar",
   data: function () {
     return {
-      select: "Ausreißer",
-      filteredExpensesActual: getFilteredExpensesActual(),
-      filteredExpensesPlanned: getFilteredExpensesPlanned(),
-      filteredTotalDifferenceExpensesActualExpensesPlanned:
-        getFilteredTotalDifferenceExpensesActualExpensesPlanned(),
-      filteredPercentageDifferenceExpensesActualExpensesPlanned:
-        getFilteredPercentageDifferenceExpensesActualExpensesPlanned(),
       selectedFiltering: "Ausreißer",
       search: "",
-      selectedItems: [],
+      showVisualizationButton: false,
     };
   },
   computed: {
+    ...mapState(useDataStore, ["expensesActual"]),
+    ...mapState(useDataStore, ["expensesPlanned"]),
+    ...mapState(useDataStore, ["totalDifferenceExpensesActualExpensesPlanned"]),
+    ...mapState(useDataStore, [
+      "percentageDifferenceExpensesActualExpensesPlanned",
+    ]),
+    ...mapState(useDataStore, ["filteredExpensesActual"]),
+    ...mapState(useDataStore, ["filteredExpensesPlanned"]),
+    ...mapState(useDataStore, [
+      "filteredTotalDifferenceExpensesActualExpensesPlanned",
+    ]),
+    ...mapState(useDataStore, [
+      "filteredPercentageDifferenceExpensesActualExpensesPlanned",
+    ]),
+    ...mapState(useDataStore, ["checkedDataItems"]),
     listItems: function () {
       var searchTerm = this.search;
       var selectedFiltering = this.selectedFiltering;
 
       if (selectedFiltering === "Ausreißer") {
         return searchDataItems(
-          sortDataItemsByOutlier(this.filteredExpensesActual),
+          sortDataItemsByOutlier(this.expensesActual),
           searchTerm
         );
       }
       if (selectedFiltering === "ID") {
         return searchDataItems(
-          sortDataItemsById(this.filteredExpensesActual),
+          sortDataItemsById(this.expensesActual),
           searchTerm
         );
       }
       if (selectedFiltering === "Titel") {
         return searchDataItems(
-          sortDataItemsByTitle(this.filteredExpensesActual),
+          sortDataItemsByTitle(this.expensesActual),
           searchTerm
         );
       }
-      return getFilteredExpensesActual();
+      return this.expensesActual();
+    },
+  },
+  watch: {
+    selectedFiltering() {
+      this.showVisualizationButton = true;
+    },
+  },
+  methods: {
+    handleVisualizationData() {
+      this.showVisualizationButton = false;
+
+      this.filteredExpensesActual.splice(0, this.filteredExpensesActual.length);
+      this.filteredExpensesPlanned.splice(
+        0,
+        this.filteredExpensesPlanned.length
+      );
+      this.filteredTotalDifferenceExpensesActualExpensesPlanned.splice(
+        0,
+        this.filteredTotalDifferenceExpensesActualExpensesPlanned.length
+      );
+      this.filteredPercentageDifferenceExpensesActualExpensesPlanned.splice(
+        0,
+        this.filteredPercentageDifferenceExpensesActualExpensesPlanned.length
+      );
+
+      let unsortedFilteredExpensesActual = [];
+      this.expensesActual.forEach((item) => {
+        if (this.checkedDataItems.includes(item.id)) {
+          unsortedFilteredExpensesActual.push(item);
+        }
+      });
+
+      let unsortedFilteredExpensesPlanned = [];
+      this.expensesPlanned.forEach((item) => {
+        if (this.checkedDataItems.includes(item.id)) {
+          unsortedFilteredExpensesPlanned.push(item);
+        }
+      });
+
+      let unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned = [];
+      this.totalDifferenceExpensesActualExpensesPlanned.forEach((item) => {
+        if (this.checkedDataItems.includes(item.id)) {
+          unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.push(
+            item
+          );
+        }
+      });
+
+      let unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned =
+        [];
+      this.percentageDifferenceExpensesActualExpensesPlanned.forEach((item) => {
+        if (this.checkedDataItems.includes(item.id)) {
+          unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.push(
+            item
+          );
+        }
+      });
+
+      if (this.selectedFiltering === "Ausreißer") {
+        this.filteredExpensesActual.push(
+          sortDataItemsByOutlier(unsortedFilteredExpensesActual)
+        );
+        this.filteredExpensesPlanned.push(
+          sortDataItemsByOutlier(unsortedFilteredExpensesPlanned)
+        );
+        this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
+          sortDataItemsByOutlier(
+            unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned
+          )
+        );
+        this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
+          sortDataItemsByOutlier(
+            unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned
+          )
+        );
+      }
+      if (this.selectedFiltering === "ID") {
+        this.filteredExpensesActual.push(
+          sortDataItemsById(unsortedFilteredExpensesActual)
+        );
+        this.filteredExpensesPlanned.push(
+          sortDataItemsById(unsortedFilteredExpensesPlanned)
+        );
+        this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
+          sortDataItemsById(
+            unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned
+          )
+        );
+        this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
+          sortDataItemsById(
+            unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned
+          )
+        );
+      }
+      if (this.selectedFiltering === "Titel") {
+        this.filteredExpensesActual.push(
+          sortDataItemsByTitle(unsortedFilteredExpensesActual)
+        );
+        this.filteredExpensesPlanned.push(
+          sortDataItemsByTitle(unsortedFilteredExpensesPlanned)
+        );
+        this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
+          sortDataItemsByTitle(
+            unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned
+          )
+        );
+        this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
+          sortDataItemsByTitle(
+            unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned
+          )
+        );
+      }
     },
   },
 };
@@ -73,7 +189,11 @@ export default {
         variant="underlined"
       ></v-select>
     </div>
-    <v-list select-strategy="multiple" bg-color="transparent">
+    <v-list
+      select-strategy="multiple"
+      bg-color="transparent"
+      style="margin-bottom: 5rem"
+    >
       <v-list-item
         v-for="(item, index) in listItems"
         :key="{ index }"
@@ -81,9 +201,18 @@ export default {
         class="px-1"
         variant="plain"
       >
-        <template #prepend="{ isActive }">
+        <template #prepend>
           <v-list-item-action start>
-            <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+            <v-checkbox-btn
+              v-model="expensesActual[index].checked"
+              :model-value="expensesActual[index].checked"
+              @change="
+                expensesActual[index].checked
+                  ? checkedDataItems.push(expensesActual[index].id)
+                  : checkedDataItems.pop(expensesActual[index].id),
+                  (showVisualizationButton = checkedDataItems.length)
+              "
+            ></v-checkbox-btn>
           </v-list-item-action>
         </template>
         <v-tooltip
@@ -113,12 +242,32 @@ export default {
         </template>
       </v-list-item>
     </v-list>
+    <div v-if="showVisualizationButton" class="filterbar-button-container">
+      <v-btn
+        class="filterbar-button"
+        size="x-large"
+        prepend-icon="mdi-chart-timeline-variant"
+        @click="handleVisualizationData"
+      >
+        Auswahl visualisieren
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <style>
 .filterbar-wrapper {
   width: 25rem;
-  height: 100%;
+  height: calc(100vh - 64px);
+  overflow: scroll;
+}
+.filterbar-button-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.filterbar-button {
+  width: 22rem;
+  margin: 2rem 1rem;
 }
 </style>
