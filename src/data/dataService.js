@@ -36,6 +36,24 @@ const addOutlierInformationToEachItem = (dataItems) => {
   return items;
 };
 
+// TODO: Delete when filtering is implemented
+const sampleFilteredItems = [
+  "5241004",
+  "5251000",
+  "5261000",
+  "5262000",
+  "5271000",
+];
+const getFilteredItems = (dataItems) => {
+  let items = [];
+  for (var i = 0; i < dataItems.length; i++) {
+    if (sampleFilteredItems.includes(dataItems[i].id)) {
+      items.push(dataItems[i]);
+    }
+  }
+  return items;
+};
+
 export const getExpensesActual = () => {
   return addOutlierInformationToEachItem(ExpensesActual);
 };
@@ -44,57 +62,68 @@ export const getExpensesPlanned = () => {
   return addOutlierInformationToEachItem(ExpensesPlanned);
 };
 
-export const getTotalDifferenceExpensesActualExpensesPlanned = () => {
-  return getDifferenceExpensesActualExpensesPlanned("total");
+// TODO: Filter data with FilterBar
+export const getFilteredExpensesActual = () => {
+  return getFilteredItems(getExpensesActual());
 };
 
-export const getPercentageDifferenceExpensesActualExpensesPlanned = () => {
-  return getDifferenceExpensesActualExpensesPlanned("percentage");
+// TODO: Filter data with FilterBar
+export const getFilteredExpensesPlanned = () => {
+  return getFilteredItems(getExpensesPlanned());
 };
 
-const getDifferenceExpensesActualExpensesPlanned = (type) => {
-  let expensesActual = getExpensesActual();
-  let expensesPlanned = getExpensesPlanned();
-  let expensesDifference = [];
-  for (var i = 0; i < expensesActual.length; i++) {
+export const getFilteredTotalDifferenceExpensesActualExpensesPlanned = () => {
+  return getFilteredDifferenceExpensesActualExpensesPlanned("total");
+};
+
+export const getFilteredPercentageDifferenceExpensesActualExpensesPlanned =
+  () => {
+    return getFilteredDifferenceExpensesActualExpensesPlanned("percentage");
+  };
+
+const getFilteredDifferenceExpensesActualExpensesPlanned = (type) => {
+  let filteredExpensesActual = getFilteredExpensesActual();
+  let filteredExpensesPlanned = getFilteredExpensesPlanned();
+  let filteredExpensesDifference = [];
+  for (var i = 0; i < filteredExpensesActual.length; i++) {
     let item = {};
-    let id = expensesActual[i].id;
+    let id = filteredExpensesActual[i].id;
 
     nonDataItems.forEach((element) => {
-      item[element] = expensesActual[i][element];
+      item[element] = filteredExpensesActual[i][element];
     });
 
-    let expensesPlannedObject = expensesPlanned.filter((obj) => {
-      return obj.id === id;
-    });
+    let filteredExpensesPlannedObject = filteredExpensesPlanned.filter(
+      (obj) => {
+        return obj.id === id;
+      }
+    );
 
-    if (expensesPlannedObject[0] !== undefined) {
-      for (const [key, value] of Object.entries(expensesActual[i])) {
-        if (!nonDataItems.includes(key)) {
-          let expensesActualValue = value;
-
-          let expensesPlannedValue = expensesPlannedObject[0][key];
-          let calculatedDifference;
-          switch (type) {
-            case "total":
-              calculatedDifference = expensesActualValue - expensesPlannedValue;
-              break;
-            case "percentage":
-              calculatedDifference =
-                ((expensesActualValue - expensesPlannedValue) /
-                  expensesPlannedValue) *
-                100.0;
-              break;
-            default:
-              calculatedDifference = null;
-              break;
-          }
-          item[key] = calculatedDifference;
+    for (const [key, value] of Object.entries(filteredExpensesActual[i])) {
+      if (!nonDataItems.includes(key)) {
+        let filteredExpensesActualValue = value;
+        let filteredExpensesPlannedValue =
+          filteredExpensesPlannedObject[0][key];
+        let calculatedDifference;
+        switch (type) {
+          case "total":
+            calculatedDifference =
+              filteredExpensesActualValue - filteredExpensesPlannedValue;
+            break;
+          case "percentage":
+            calculatedDifference =
+              ((filteredExpensesActualValue - filteredExpensesPlannedValue) /
+                filteredExpensesPlannedValue) *
+              100.0;
+            break;
+          default:
+            calculatedDifference = null;
+            break;
         }
+        item[key] = calculatedDifference;
       }
     }
-
-    expensesDifference.push(item);
+    filteredExpensesDifference.push(item);
   }
-  return expensesDifference;
+  return filteredExpensesDifference;
 };
