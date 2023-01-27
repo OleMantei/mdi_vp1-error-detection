@@ -209,7 +209,6 @@ export default {
               v-model="range"
               :max="max"
               :min="min"
-              :tick-labels="years"
               hide-details
               class="align-center"
               color="blue"
