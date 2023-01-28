@@ -113,7 +113,10 @@ export default {
         Customisation-options for the scatter graphs
         */
       chartOptionsScatter: {
-        events: ["mouseout", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
+        events: ["mouseout", "click", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
+        onClick: () => {
+          console.log("click!");
+        },
         plugins: {
           legend: {
             display: false, //disables the legend at the top
@@ -122,7 +125,7 @@ export default {
         scales: {
           x: {
             ticks: {
-              display: false, // disables numbers at the bottom
+              display: false, // disables numbering of the x-axis
             },
             grid: {
               display: false, //disables the grid in the background
@@ -222,6 +225,7 @@ export default {
                   single-line
                   hide-details
                   type="number"
+                  counter="4"
                   style="width: 5vw"
                   @change="$set(range, 0, $event)"
                 ></v-text-field>
