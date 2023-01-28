@@ -31,7 +31,6 @@ export default {
     ...mapState(useDataStore, [
       "filteredPercentageDifferenceExpensesActualExpensesPlanned",
     ]),
-    ...mapState(useDataStore, ["checkedDataItems"]),
     listItems: function () {
       var searchTerm = this.search;
       var selectedFiltering = this.selectedFiltering;
@@ -82,21 +81,21 @@ export default {
 
       let unsortedFilteredExpensesActual = [];
       this.expensesActual.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
+        if (item.checked) {
           unsortedFilteredExpensesActual.push(item);
         }
       });
 
       let unsortedFilteredExpensesPlanned = [];
       this.expensesPlanned.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
+        if (item.checked) {
           unsortedFilteredExpensesPlanned.push(item);
         }
       });
 
       let unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned = [];
       this.totalDifferenceExpensesActualExpensesPlanned.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
+        if (item.checked) {
           unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.push(
             item
           );
@@ -106,7 +105,7 @@ export default {
       let unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned =
         [];
       this.percentageDifferenceExpensesActualExpensesPlanned.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
+        if (item.checked) {
           unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.push(
             item
           );
@@ -208,16 +207,7 @@ export default {
               :model-value="
                 expensesActual.find((i) => i.id === item.id).checked
               "
-              @change="
-                expensesActual.find((i) => i.id === item.id).checked
-                  ? checkedDataItems.push(
-                      expensesActual.find((i) => i.id === item.id).id
-                    )
-                  : checkedDataItems.pop(
-                      expensesActual.find((i) => i.id === item.id).id
-                    ),
-                  (showVisualizationButton = checkedDataItems.length)
-              "
+              @change="showVisualizationButton = true"
             ></v-checkbox-btn>
           </v-list-item-action>
         </template>
