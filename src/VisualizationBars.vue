@@ -1,7 +1,8 @@
 <script>
 import AppContainer from "./components/AppContainer.vue";
 import { Scatter } from "vue-chartjs";
-import { getFilteredTotalDifferenceExpensesActualExpensesPlanned } from "../src/data/dataService";
+import { mapState } from "pinia";
+import { useDataStore } from "./stores/DataStore";
 import {
   Chart as ChartJS,
   Title,
@@ -32,54 +33,35 @@ export default {
     AppContainer,
     Scatter,
   },
-
   data() {
     return {
-      /*
-      Data for the main chart
-      */
-      chartDataScatter1: {
-        datasets: [
-          {
-            label: "No Problems detected",
-            borderWidth: 1,
-            data: this.parseData(),
-            radius: [9],
-            backgroundColor: ["#61B544"],
-            borderColor: ["#61B544"],
-          },
-          {
-            label: "Outlier",
-            borderWidth: 1,
-            data: this.parseData(),
-            radius: [9],
-            backgroundColor: ["#EB5A5A"],
-            borderColor: ["#EB5A5A"],
-          },
-          {
-            type: "bar",
-            data: this.parseData(),
-            barThickness: 1,
-          },
-        ],
+      yearsSlider: {
+        label: "",
+        val: 50,
+        color: "red",
+        backgroundColor: "blue",
       },
-      /*
-        Data for the bottom chart
-        */
-      chartDataScatter2: {
+      min: 2010,
+      max: 2021,
+      range: [2010, 2021],
+    };
+  },
+  computed: {
+    ...mapState(useDataStore, ["filteredExpensesActual"]),
+    ...mapState(useDataStore, ["filteredExpensesPlanned"]),
+    ...mapState(useDataStore, [
+      "filteredTotalDifferenceExpensesActualExpensesPlanned",
+    ]),
+    ...mapState(useDataStore, [
+      "filteredPercentageDifferenceExpensesActualExpensesPlanned",
+    ]),
+    chartData() {
+      return {
         datasets: [
           {
             label: "No Problems detected",
             borderWidth: 1,
-            data: [
-              { x: 1, y: 3 },
-              { x: 2, y: 1 },
-              { x: 5, y: -2 },
-              { x: 6, y: -1 },
-              { x: 3, y: 1 },
-              { x: 4, y: 12 },
-              { x: 7, y: -9 },
-            ],
+            data: this.parseData(),
             radius: [9],
             backgroundColor: ["#61B544"],
             borderColor: ["#61B544"],
@@ -94,36 +76,77 @@ export default {
           },
           {
             type: "bar",
-            data: [
-              { x: 1, y: 3 },
-              { x: 2, y: 1 },
-              { x: 5, y: -2 },
-              { x: 6, y: -1 },
-              { x: 8, y: 4 },
-              { x: 3, y: 1 },
-              { x: 4, y: 12 },
-              { x: 7, y: -9 },
-            ],
+            data: [{ x: 8, y: 4 }],
             barThickness: 1,
           },
         ],
-      },
-
-      /*
-        Customisation-options for the scatter graphs
-        */
-      chartOptionsScatter: {
-        events: ["mouseout", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
+      };
+    },
+    chartData2() {
+      return {
+        datasets: [
+          {
+            label: "No Problems detected",
+            borderWidth: 1,
+            data: this.parseData(),
+            radius: [9],
+            backgroundColor: ["#61B544"],
+            borderColor: ["#61B544"],
+          },
+          {
+            label: "Outlier",
+            borderWidth: 1,
+            data: this.parseData(),
+            radius: [9],
+            backgroundColor: ["#EB5A5A"],
+            borderColor: ["#EB5A5A"],
+          },
+          {
+            type: "bar",
+            data: this.parseData(),
+            barThickness: 1,
+          },
+        ],
+      };
+    },
+    chartOptions() {
+      return {
+        //events: ["mouseout", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
         plugins: {
           legend: {
             display: false, //disables the legend at the top
           },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label || "";
+
+                if (label) {
+                  label += ": ";
+                }
+                if (context.parsed.y !== null) {
+                  label += new Intl.NumberFormat("de-DE", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(context.parsed.y);
+                }
+                return label;
+              },
+            },
+          },
+          /*interaction: {
+            intersect: false,
+            mode: "index",
+          },*/
         },
         scales: {
           x: {
             ticks: {
-              display: false, // disables numbers at the bottom
+              display: true, // disables numbers at the bottom
+              stepSize: 1,
             },
+            min: 2010,
+            max: 2021,
             grid: {
               display: false, //disables the grid in the background
             },
@@ -152,35 +175,28 @@ export default {
         },
         responsive: true,
         maintainAspectRatio: false,
-      },
-      yearsSlider: {
-        label: "",
-        val: 50,
-        color: "red",
-        backgroundColor: "blue",
-      },
-      min: 2010,
-      max: 2020,
-      range: [2010, 2020],
-    };
+      };
+    },
   },
   methods: {
     parseData() {
-      const rawValues =
-        getFilteredTotalDifferenceExpensesActualExpensesPlanned("total");
+      const rawValues = this.filteredExpensesActual;
+      if (rawValues === undefined) {
+        return;
+      }
       let values = [];
       rawValues.forEach((element) => {
-        for (let [key, value] of Object.entries(element)) {
-          if (key.length == 4 /*|| key == "title"*/) {
-            const xy = { x: Math.floor(key), y: value };
-            values.push(xy);
+        element.forEach((el) => {
+          for (let [key, value] of Object.entries(el)) {
+            if (key.length == 4 /*|| key == "title"*/) {
+              const xy = { x: Math.floor(key), y: value };
+              values.push(xy);
+            }
           }
-        }
+        });
       });
-      console.log(values);
       return values;
     },
-    xLabel() {},
   },
 };
 </script>
@@ -195,8 +211,8 @@ export default {
         </div>
         <Scatter
           class="scatterChart"
-          :options="chartOptionsScatter"
-          :data="chartDataScatter1"
+          :options="chartOptions"
+          :data="chartData"
         />
       </div>
       <!-- End Top Scatterchart -->
@@ -238,15 +254,14 @@ export default {
                 ></v-text-field>
               </template>
               <!-- End Slider Numbers-->
-          </v-range-slider>
-        </v-card>
-        <!-- End Slider -->
-
+            </v-range-slider>
+          </v-card>
+          <!-- End Slider -->
         </div>
         <Scatter
           class="scatterChart"
-          :options="chartOptionsScatter"
-          :data="chartDataScatter2"
+          :options="chartOptions"
+          :data="chartData2"
         />
       </div>
       <!-- End Bottom Scatterchart -->
