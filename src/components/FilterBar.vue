@@ -87,27 +87,33 @@ export default {
       });
 
       let unsortedFilteredExpensesPlanned = [];
-      this.expensesPlanned.forEach((item) => {
+      this.expensesActual.forEach((item) => {
         if (item.checked) {
-          unsortedFilteredExpensesPlanned.push(item);
+          unsortedFilteredExpensesPlanned.push(
+            this.expensesPlanned.find((i) => i.id === item.id)
+          );
         }
       });
 
       let unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned = [];
-      this.totalDifferenceExpensesActualExpensesPlanned.forEach((item) => {
+      this.expensesActual.forEach((item) => {
         if (item.checked) {
           unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.push(
-            item
+            this.totalDifferenceExpensesActualExpensesPlanned.find(
+              (i) => i.id === item.id
+            )
           );
         }
       });
 
       let unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned =
         [];
-      this.percentageDifferenceExpensesActualExpensesPlanned.forEach((item) => {
+      this.expensesActual.forEach((item) => {
         if (item.checked) {
           unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.push(
-            item
+            this.percentageDifferenceExpensesActualExpensesPlanned.find(
+              (i) => i.id === item.id
+            )
           );
         }
       });
@@ -116,18 +122,32 @@ export default {
         this.filteredExpensesActual.push(
           sortDataItemsByOutlier(unsortedFilteredExpensesActual)
         );
-        this.filteredExpensesPlanned.push(
-          sortDataItemsByOutlier(unsortedFilteredExpensesPlanned)
+        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
+          (item) => {
+            this.filteredExpensesPlanned.push(
+              unsortedFilteredExpensesPlanned.find((i) => i.id == item.id)
+            );
+          }
         );
-        this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsByOutlier(
-            unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned
-          )
+
+        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
+          (item) => {
+            this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
+              unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.find(
+                (i) => i.id == item.id
+              )
+            );
+          }
         );
-        this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsByOutlier(
-            unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned
-          )
+
+        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
+          (item) => {
+            this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
+              unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.find(
+                (i) => i.id == item.id
+              )
+            );
+          }
         );
       }
       if (this.selectedFiltering === "ID") {
