@@ -59,24 +59,24 @@ export default {
       return {
         datasets: [
           {
-            label: "No Problems detected",
+            label: "No",
             borderWidth: 1,
             data: this.parseData(),
             radius: [9],
-            backgroundColor: ["#61B544"],
-            borderColor: ["#61B544"],
+            backgroundColor: this.colorData(),
+            borderColor: this.colorData(),
           },
-          {
+          /*{
             label: "Outlier",
             borderWidth: 1,
-            data: [{ x: 8, y: 4 }],
+            data: this.parseData(),
             radius: [9],
-            backgroundColor: ["#EB5A5A"],
+            backgroundColor: this.c,
             borderColor: ["#EB5A5A"],
-          },
+          },*/
           {
             type: "bar",
-            data: [{ x: 8, y: 4 }],
+            data: this.parseData(),
             barThickness: 1,
           },
         ],
@@ -86,24 +86,24 @@ export default {
       return {
         datasets: [
           {
-            label: "No Problems detected",
             borderWidth: 1,
-            data: this.parseData(),
+            data: [{ x: 4, y: 4 }],
             radius: [9],
+            label: "No Problems detected",
             backgroundColor: ["#61B544"],
             borderColor: ["#61B544"],
           },
           {
             label: "Outlier",
             borderWidth: 1,
-            data: this.parseData(),
+            data: [{ x: 2, y: 2 }],
             radius: [9],
             backgroundColor: ["#EB5A5A"],
             borderColor: ["#EB5A5A"],
           },
           {
             type: "bar",
-            data: this.parseData(),
+            data: [{ x: 2, y: 2 }],
             barThickness: 1,
           },
         ],
@@ -122,7 +122,7 @@ export default {
                 let label = context.dataset.label || "";
 
                 if (label) {
-                  label += ": ";
+                  label = this.titleParser() + ": ";
                 }
                 if (context.parsed.y !== null) {
                   label += new Intl.NumberFormat("de-DE", {
@@ -142,11 +142,8 @@ export default {
         scales: {
           x: {
             ticks: {
-              display: true, // disables numbers at the bottom
-              stepSize: 1,
+              display: false, // disables numbers at the bottom
             },
-            min: 2010,
-            max: 2021,
             grid: {
               display: false, //disables the grid in the background
             },
@@ -181,21 +178,76 @@ export default {
   methods: {
     parseData() {
       const rawValues = this.filteredExpensesActual;
-      if (rawValues === undefined) {
+      if (rawValues.length == 0 /*|| this.chartData.datasets == 0*/) {
+        console.log("empty");
         return;
       }
-      let values = [];
+      const values = [];
       rawValues.forEach((element) => {
-        element.forEach((el) => {
-          for (let [key, value] of Object.entries(el)) {
-            if (key.length == 4 /*|| key == "title"*/) {
-              const xy = { x: Math.floor(key), y: value };
+        for (let i = 0; i < element.length; i++) {
+          for (let [key, value] of Object.entries(element[i])) {
+            /*if (key == "title") {
+              dataP.label = value;
+            }*/
+            if (key == "outlierScore") {
+              const xy = { x: i + 1, y: value };
               values.push(xy);
+              /*dataP.data = [{ x: i + 1, y: value }];
+              barData.data = [{ x: i + 1, y: value }];*/
+            }
+            /*if (key == "outlierScoreColor") {
+              this.colorData += [value];
+            }
+            /*if (key == "outlierScore") {
+              const xy = { x: key, y: value };
+              values.push(xy);
+            }*/
+          }
+          //console.log(dataP);
+          //return dataP;
+        }
+      });
+      console.log(values);
+      return values;
+    },
+    colorData() {
+      const rawValues = this.filteredExpensesActual;
+      if (!rawValues /*|| this.chartData.datasets == 0*/) {
+        console.log("empty");
+        return;
+      }
+      let arr = [];
+      rawValues.forEach((element) => {
+        for (let i = 0; i < element.length; i++) {
+          for (let [key, value] of Object.entries(element[i])) {
+            if (key == "outlierScoreColor") {
+              arr.push(value);
             }
           }
-        });
+        }
       });
-      return values;
+      return arr;
+    },
+    titleParser() {
+      const rawValues = this.filteredExpensesActual;
+      if (!rawValues /*|| this.chartData.datasets == 0*/) {
+        console.log("empty");
+        return;
+      }
+      let title = "";
+      rawValues.forEach((element) => {
+        for (let i = 0; i < element.length; i++) {
+          for (let [key, value] of Object.entries(element[i])) {
+            if (key == "title") {
+              title = value;
+              console.log(title);
+              /*values.push(value);
+              console.log(values);*/
+            }
+          }
+        }
+      });
+      return title;
     },
   },
 };
@@ -265,6 +317,9 @@ export default {
         />
       </div>
       <!-- End Bottom Scatterchart -->
+      <div>
+        <p>{{ filteredExpensesActual }}</p>
+      </div>
     </div>
   </AppContainer>
 </template>
