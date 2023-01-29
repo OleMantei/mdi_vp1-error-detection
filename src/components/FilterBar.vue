@@ -195,8 +195,8 @@ export default {
       style="margin-bottom: 5rem"
     >
       <v-list-item
-        v-for="(item, index) in listItems"
-        :key="{ index }"
+        v-for="item in listItems"
+        :key="item.id"
         :value="item.id"
         class="px-1"
         variant="plain"
@@ -204,12 +204,18 @@ export default {
         <template #prepend>
           <v-list-item-action start>
             <v-checkbox-btn
-              v-model="expensesActual[index].checked"
-              :model-value="expensesActual[index].checked"
+              v-model="expensesActual.find((i) => i.id === item.id).checked"
+              :model-value="
+                expensesActual.find((i) => i.id === item.id).checked
+              "
               @change="
-                expensesActual[index].checked
-                  ? checkedDataItems.push(expensesActual[index].id)
-                  : checkedDataItems.pop(expensesActual[index].id),
+                expensesActual.find((i) => i.id === item.id).checked
+                  ? checkedDataItems.push(
+                      expensesActual.find((i) => i.id === item.id).id
+                    )
+                  : checkedDataItems.pop(
+                      expensesActual.find((i) => i.id === item.id).id
+                    ),
                   (showVisualizationButton = checkedDataItems.length)
               "
             ></v-checkbox-btn>
