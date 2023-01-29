@@ -14,7 +14,6 @@ import {
   ScatterController,
   PointElement,
 } from "chart.js";
-
 ChartJS.register(
   Title,
   Tooltip,
@@ -25,8 +24,6 @@ ChartJS.register(
   ScatterController,
   PointElement
 );
-var minYear;
-var maxYear;
 // TODO: import needed data as seen in FilterBar Component
 export default {
   name: "VisualizationBars",
@@ -36,15 +33,17 @@ export default {
   },
   data() {
     return {
+      detail: 1,
+      title: "",
       yearsSlider: {
         label: "",
         val: 50,
         color: "red",
         backgroundColor: "blue",
       },
-      min: minYear,
-      max: maxYear,
-      range: [minYear, maxYear],
+      min: 2010,
+      max: 2021,
+      range: [2010, 2021],
     };
   },
   computed: {
@@ -60,7 +59,7 @@ export default {
       return {
         datasets: [
           {
-            label: "Ausreißerscore XX für",
+            label: "Außreißerscore: ",
             borderWidth: 1,
             data: this.parseData(),
             radius: [9],
@@ -79,24 +78,16 @@ export default {
       return {
         datasets: [
           {
+            label: "Summe: ",
             borderWidth: 1,
-            data: [{ x: 4, y: 4 }],
+            data: this.setChartTwo(),
             radius: [9],
-            label: "No Problems detected",
-            backgroundColor: ["#61B544"],
-            borderColor: ["#61B544"],
-          },
-          {
-            label: "Outlier",
-            borderWidth: 1,
-            data: [{ x: 2, y: 2 }],
-            radius: [9],
-            backgroundColor: ["#EB5A5A"],
-            borderColor: ["#EB5A5A"],
+            backgroundColor: this.colorData(),
+            borderColor: this.colorData(),
           },
           {
             type: "bar",
-            data: [{ x: 2, y: 2 }],
+            data: this.setChartTwo(),
             barThickness: 1,
           },
         ],
@@ -108,35 +99,24 @@ export default {
         */
     chartOptions() {
       return {
-        events: [
-          "mouseout",
-          "click",
-          "mousemove",
-          "touchstart",
-          "touchmove",
-          "touchend",
-        ],
-        onClick: () => {
-          console.log("click!");
-        },
+        //events: ["mouseout", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
         plugins: {
           legend: {
             display: false, //disables the legend at the top
           },
           tooltip: {
+            events: ["click", "mouseout"],
             callbacks: {
               label: function (context) {
                 let label = context.dataset.label || "";
-
-                if (label) {
-                  label = this.titleParser() + ": ";
-                }
                 if (context.parsed.y !== null) {
-                  label += new Intl.NumberFormat("de-DE", {
-                    style: "currency",
-                    currency: "EUR",
-                  }).format(context.parsed.y);
+                  this.detail = context.parsed.y;
+                  console.log(this.detail);
+                  label += new Intl.NumberFormat("de-DE", {}).format(
+                    context.parsed.y
+                  );
                 }
+
                 return label;
               },
             },
@@ -149,7 +129,7 @@ export default {
         scales: {
           x: {
             ticks: {
-              display: false, // disables numbering of the x-axis
+              display: false, // disables numbers at the bottom
             },
             grid: {
               display: false, //disables the grid in the background
@@ -193,38 +173,20 @@ export default {
       rawValues.forEach((element) => {
         for (let i = 0; i < element.length; i++) {
           for (let [key, value] of Object.entries(element[i])) {
-            /*if (key == "title") {
-              dataP.label = value;
-            }*/
             if (key == "outlierScore") {
               const xy = { x: i + 1, y: value };
               values.push(xy);
-              /*dataP.data = [{ x: i + 1, y: value }];
-              barData.data = [{ x: i + 1, y: value }];*/
             }
-            /*if (key == "outlierScoreColor") {
-              this.colorData += [value];
-            }
-            /*if (key == "outlierScore") {
-              const xy = { x: key, y: value };
-              values.push(xy);
-            }*/
           }
-          //console.log(dataP);
-          //return dataP;
         }
       });
-      console.log(values);
-      //get smallest xValue
+      //console.log(values);
+      //get smallest and highest xValue
       let allYears = [];
       for (let i = 0; i < values.length; i++) {
         var xValue = values[i].x;
         allYears.push(xValue);
       }
-      console.log(allYears);
-      minYear = Math.min(...allYears);
-      maxYear = Math.max(...allYears);
-      console.log(minYear, maxYear);
       return values;
     },
     colorData() {
@@ -245,9 +207,40 @@ export default {
       });
       return arr;
     },
-    titleParser() {
+    setChartTwo() {
       const rawValues = this.filteredExpensesActual;
       if (!rawValues /*|| this.chartData.datasets == 0*/) {
+        console.log("empty");
+        return;
+      }
+      let arr = [];
+      let obj = {};
+      rawValues.forEach((element) => {
+        element.forEach((el) => {
+          for (let [key, value] of Object.entries(el)) {
+            if (key == "outlierScore") {
+              console.log(value);
+              obj = el;
+            }
+          }
+        });
+      });
+      for (let [key, value] of Object.entries(obj)) {
+        if (key.length == 4) {
+          //console.log(key);
+          const xy = { x: Number(key), y: value };
+          arr.push(xy);
+        }
+        if (key == "title") {
+          this.title = value;
+        }
+      }
+      console.log(arr);
+      return arr;
+    },
+    /*titleParser() {
+      const rawValues = this.filteredExpensesActual;
+      if (!rawValues || this.chartData.datasets == 0) {
         console.log("empty");
         return;
       }
@@ -255,17 +248,50 @@ export default {
       rawValues.forEach((element) => {
         for (let i = 0; i < element.length; i++) {
           for (let [key, value] of Object.entries(element[i])) {
+            if (key == "outlierScore")
             if (key == "title") {
               title = value;
               console.log(title);
-              /*values.push(value);
-              console.log(values);*/
+              values.push(value);
+              console.log(values);
             }
           }
         }
+        return title;
       });
-      return title;
     },
+    */
+
+    /*updateBottomChart:function() {
+
+
+      let lowestYear = Math.trunc(document.getElementById("lowYearRange").value);
+      let highestYear = Math.trunc(document.getElementById("highYearRange").value);
+      const rawValues = getFilteredTotalDifferenceExpensesActualExpensesPlanned("total");
+      let values = [];
+      let remainingValues;
+      //Get the data like in parseData()
+      rawValues.forEach((element) => {
+        for (let [key, value] of Object.entries(element)) {
+          if (key.length == 4 /*|| key == "title") {
+            const xy = { x: Math.floor(key), y: value };
+            values.push(xy);
+          }
+        }
+      });
+      //check if xValues in data are outside of slider range and remove data if thats the case
+      remainingValues = values;
+      for (let i=0; i<remainingValues.length; i++) {
+        if (remainingValues[i].x < lowestYear) {
+          //const index = remainingValues.indexOf(remainingValues[i]);
+          remainingValues.splice(remainingValues[i], 1)
+        }
+        else if(remainingValues[i].x > highestYear) {
+          remainingValues.splice(remainingValues[i], 1);
+        }
+      }
+      console.log("remainingValues: ", remainingValues)
+    }, */
   },
 };
 </script>
@@ -279,7 +305,6 @@ export default {
           <h3>Alle ausgewählten Ausgabenbereiche - generelle Abweichung</h3>
         </div>
         <Scatter
-          ref="scatterMain"
           class="scatterChart"
           :options="chartOptions"
           :data="chartData"
@@ -289,18 +314,19 @@ export default {
       <!-- Start Bottom Scatterchart -->
       <div id="secondary-chart">
         <div class="headline">
-          <h3>Auswahl - Abweichung zu den vorherigen Jahren</h3>
+          <h3>{{ title }} - Abweichung zu den vorherigen Jahren</h3>
           <!-- Start Slider -->
-          <v-card id="yearsSlider" flat>
+          <!--  <v-card id="yearsSlider" flat>
             <v-range-slider
-              v-model="range"
+              v-model="range" 
               :max="max"
               :min="min"
+              disabled
               hide-details
               class="align-center"
               color="blue"
             >
-              <!-- Start Slider Numbers-->
+
               <template #append>
                 <v-text-field
                   class="yearsText"
@@ -309,7 +335,6 @@ export default {
                   single-line
                   hide-details
                   type="number"
-                  counter="4"
                   style="width: 5vw"
                   @change="$set(range, 0, $event)"
                 ></v-text-field>
@@ -324,22 +349,18 @@ export default {
                   @change="$set(range, 1, $event)"
                 ></v-text-field>
               </template>
-              <!-- End Slider Numbers-->
+
             </v-range-slider>
-          </v-card>
+          </v-card> -->
           <!-- End Slider -->
         </div>
         <Scatter
-          ref="scatterSub"
           class="scatterChart"
           :options="chartOptions"
           :data="chartData2"
         />
       </div>
       <!-- End Bottom Scatterchart -->
-      <div>
-        <p>{{ filteredExpensesActual }}</p>
-      </div>
     </div>
   </AppContainer>
 </template>
@@ -348,19 +369,16 @@ export default {
 .flex-grow-1 {
   background-color: #f4f4f4;
 }
-
 .headline {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 3vh;
 }
-
 .wrapper {
   height: 100%;
   background-color: #f4f4f4;
 }
-
 #main-chart {
   height: 50vh;
   width: 100%;
@@ -369,7 +387,6 @@ export default {
   padding: 2vw;
   margin-bottom: 5vh;
 }
-
 #secondary-chart {
   height: 30vh;
   width: 100%;
@@ -377,7 +394,6 @@ export default {
   border-radius: 1vw;
   padding: 2vw;
 }
-
 #yearsSlider {
   display: flex;
   background-color: #fff;
