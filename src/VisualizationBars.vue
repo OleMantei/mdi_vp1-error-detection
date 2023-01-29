@@ -41,20 +41,12 @@ export default {
       chartDataScatter1: {
         datasets: [
           {
-            label: "No Problems detected",
+            label: "Ausreißerscore XX für",
             borderWidth: 1,
             data: this.parseData(),
             radius: [9],
             backgroundColor: ["#61B544"],
             borderColor: ["#61B544"],
-          },
-          {
-            label: "Outlier",
-            borderWidth: 1,
-            data: this.parseData(),
-            radius: [9],
-            backgroundColor: ["#EB5A5A"],
-            borderColor: ["#EB5A5A"],
           },
           {
             type: "bar",
@@ -64,8 +56,8 @@ export default {
         ],
       },
       /*
-        Data for the bottom chart
-        */
+      Data for the bottom chart
+      */
       chartDataScatter2: {
         datasets: [
           {
@@ -113,7 +105,7 @@ export default {
         Customisation-options for the scatter graphs
         */
       chartOptionsScatter: {
-        events: ["mouseout", "click", "touchstart", "touchmove", "touchend"], //disables standard hover effect ("mousemove"), and click ("click")
+        events: ["mouseout", "click", "mousemove", "touchstart", "touchmove", "touchend"],
         onClick: () => {
           console.log("click!");
         },
