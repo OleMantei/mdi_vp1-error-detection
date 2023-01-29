@@ -24,7 +24,8 @@ ChartJS.register(
   ScatterController,
   PointElement
 );
-
+var minYear;
+var maxYear;
 // TODO: import needed data as seen in FilterBar Component
 export default {
   name: "VisualizationBars",
@@ -64,13 +65,13 @@ export default {
             label: "No Problems detected",
             borderWidth: 1,
             data: [
-              { x: 1, y: 3 },
-              { x: 2, y: 1 },
-              { x: 5, y: -2 },
-              { x: 6, y: -1 },
-              { x: 3, y: 1 },
-              { x: 4, y: 12 },
-              { x: 7, y: -9 },
+              { x: 2010, y: 3 },
+              { x: 2011, y: 1 },
+              { x: 2012, y: -2 },
+              { x: 2013, y: -1 },
+              { x: 2014, y: 1 },
+              { x: 2015, y: 12 },
+              { x: 2016, y: -9 },
             ],
             radius: [9],
             backgroundColor: ["#61B544"],
@@ -79,7 +80,7 @@ export default {
           {
             label: "Outlier",
             borderWidth: 1,
-            data: [{ x: 8, y: 4 }],
+            data: [{ x: 2017, y: 4 }],
             radius: [9],
             backgroundColor: ["#EB5A5A"],
             borderColor: ["#EB5A5A"],
@@ -87,14 +88,14 @@ export default {
           {
             type: "bar",
             data: [
-              { x: 1, y: 3 },
-              { x: 2, y: 1 },
-              { x: 5, y: -2 },
-              { x: 6, y: -1 },
-              { x: 8, y: 4 },
-              { x: 3, y: 1 },
-              { x: 4, y: 12 },
-              { x: 7, y: -9 },
+              { x: 2010, y: 3 },
+              { x: 2011, y: 1 },
+              { x: 2012, y: -2 },
+              { x: 2013, y: -1 },
+              { x: 2014, y: 1 },
+              { x: 2015, y: 12 },
+              { x: 2016, y: -9 },
+              { x: 2017, y: 4 }
             ],
             barThickness: 1,
           },
@@ -107,7 +108,7 @@ export default {
       chartOptionsScatter: {
         events: ["mouseout", "click", "mousemove", "touchstart", "touchmove", "touchend"],
         onClick: () => {
-          console.log("click!");
+          console.log("click!")
         },
         plugins: {
           legend: {
@@ -154,9 +155,9 @@ export default {
         color: "red",
         backgroundColor: "blue",
       },
-      min: 2010,
-      max: 2020,
-      range: [2010, 2020],
+      min: minYear,
+      max: maxYear,
+      range: [minYear, maxYear],
     };
   },
   methods: {
@@ -173,10 +174,23 @@ export default {
         }
       });
       console.log(values);
+
+      //get smallest xValue
+      let allYears = [];
+      for (let i=0; i<values.length; i++) {
+        var xValue = values[i].x
+        allYears.push(xValue);
+      }
+      console.log(allYears);
+      minYear = Math.min(...allYears);
+      maxYear = Math.max(...allYears);
+      console.log(minYear, maxYear);
       return values;
     },
   },
 };
+
+
 </script>
 
 <template>
@@ -188,6 +202,7 @@ export default {
           <h3>Alle ausgewählten Ausgabenbereiche - generelle Abweichung</h3>
         </div>
         <Scatter
+          ref="scatterMain"
           class="scatterChart"
           :options="chartOptionsScatter"
           :data="chartDataScatter1"
@@ -239,6 +254,7 @@ export default {
 
         </div>
         <Scatter
+          ref="scatterSub"
           class="scatterChart"
           :options="chartOptionsScatter"
           :data="chartDataScatter2"
