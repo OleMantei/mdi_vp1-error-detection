@@ -24,8 +24,11 @@ ChartJS.register(
   ScatterController,
   PointElement
 );
+
+
 var minYear;
 var maxYear;
+
 // TODO: import needed data as seen in FilterBar Component
 export default {
   name: "VisualizationBars",
@@ -64,39 +67,14 @@ export default {
           {
             label: "No Problems detected",
             borderWidth: 1,
-            data: [
-              { x: 2010, y: 3 },
-              { x: 2011, y: 1 },
-              { x: 2012, y: -2 },
-              { x: 2013, y: -1 },
-              { x: 2014, y: 1 },
-              { x: 2015, y: 12 },
-              { x: 2016, y: -9 },
-            ],
+            data: this.parseData(),
             radius: [9],
             backgroundColor: ["#61B544"],
             borderColor: ["#61B544"],
           },
           {
-            label: "Outlier",
-            borderWidth: 1,
-            data: [{ x: 2017, y: 4 }],
-            radius: [9],
-            backgroundColor: ["#EB5A5A"],
-            borderColor: ["#EB5A5A"],
-          },
-          {
             type: "bar",
-            data: [
-              { x: 2010, y: 3 },
-              { x: 2011, y: 1 },
-              { x: 2012, y: -2 },
-              { x: 2013, y: -1 },
-              { x: 2014, y: 1 },
-              { x: 2015, y: 12 },
-              { x: 2016, y: -9 },
-              { x: 2017, y: 4 }
-            ],
+            data: this.parseData(),
             barThickness: 1,
           },
         ],
@@ -164,7 +142,7 @@ export default {
     parseData() {
       const rawValues =
         getFilteredTotalDifferenceExpensesActualExpensesPlanned("total");
-      let values = [];
+        let values = [];
       rawValues.forEach((element) => {
         for (let [key, value] of Object.entries(element)) {
           if (key.length == 4 /*|| key == "title"*/) {
@@ -173,25 +151,54 @@ export default {
           }
         }
       });
-      console.log(values);
 
-      //get smallest xValue
+      //get smallest and highest xValue
       let allYears = [];
       for (let i=0; i<values.length; i++) {
         var xValue = values[i].x
         allYears.push(xValue);
       }
-      console.log(allYears);
       minYear = Math.min(...allYears);
       maxYear = Math.max(...allYears);
-      console.log(minYear, maxYear);
       return values;
+
     },
+
+    updateBottomChart:function() {
+      /*
+      *This part of the code is a mess and im sorry
+      */
+      let lowestYear = Math.trunc(document.getElementById("lowYearRange").value);
+      let highestYear = Math.trunc(document.getElementById("highYearRange").value);
+      const rawValues = getFilteredTotalDifferenceExpensesActualExpensesPlanned("total");
+      let values = [];
+      let remainingValues;
+      //Get the data like in parseData()
+      rawValues.forEach((element) => {
+        for (let [key, value] of Object.entries(element)) {
+          if (key.length == 4 /*|| key == "title"*/) {
+            const xy = { x: Math.floor(key), y: value };
+            values.push(xy);
+          }
+        }
+      });
+      //check if xValues in data are outside of slider range and remove data if thats the case
+      remainingValues = values;
+      for (let i=0; i<remainingValues.length; i++) {
+        if (remainingValues[i].x < lowestYear) {
+          //const index = remainingValues.indexOf(remainingValues[i]);
+          remainingValues.splice(remainingValues[i], 1)
+        } 
+        else if(remainingValues[i].x > highestYear) {
+          remainingValues.splice(remainingValues[i], 1);
+        }
+      }
+      console.log("remainingValues: ", remainingValues)
+    } 
   },
 };
-
-
 </script>
+
 
 <template>
   <AppContainer>
@@ -216,16 +223,21 @@ export default {
           <!-- Start Slider -->
           <v-card id="yearsSlider" flat>
             <v-range-slider
+              id="rangeSlider"
               v-model="range"
+              
               :max="max"
               :min="min"
               hide-details
               class="align-center"
               color="blue"
+              @click="updateBottomChart"
+              
             >
               <!-- Start Slider Numbers-->
               <template #append>
                 <v-text-field
+                  id="lowYearRange"
                   class="yearsText"
                   :value="range[0]"
                   disabled
@@ -234,9 +246,9 @@ export default {
                   type="number"
                   counter="4"
                   style="width: 5vw"
-                  @change="$set(range, 0, $event)"
                 ></v-text-field>
                 <v-text-field
+                  id="highYearRange"
                   class="yearsText"
                   :value="range[1]"
                   disabled
@@ -244,7 +256,6 @@ export default {
                   hide-details
                   type="number"
                   style="width: 5vw"
-                  @change="$set(range, 1, $event)"
                 ></v-text-field>
               </template>
               <!-- End Slider Numbers-->
@@ -301,7 +312,7 @@ export default {
 
 #yearsSlider {
   display: flex;
-  background-color: #fff;
+  background-color: transparent;
   width: 30vw;
   padding-left: 30px;
 }
