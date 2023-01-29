@@ -42,9 +42,9 @@ export default {
         color: "red",
         backgroundColor: "blue",
       },
-      min: 2010,
-      max: 2021,
-      range: [2010, 2021],
+      min: minYear,
+      max: maxYear,
+      range: [minYear, maxYear],
     };
   },
   computed: {
@@ -100,15 +100,24 @@ export default {
             barThickness: 1,
           },
         ],
-      },
+      };
+    },
 
-      /*
+    /*
         Customisation-options for the scatter graphs
         */
-      chartOptionsScatter: {
-        events: ["mouseout", "click", "mousemove", "touchstart", "touchmove", "touchend"],
+    chartOptions() {
+      return {
+        events: [
+          "mouseout",
+          "click",
+          "mousemove",
+          "touchstart",
+          "touchmove",
+          "touchend",
+        ],
         onClick: () => {
-          console.log("click!")
+          console.log("click!");
         },
         plugins: {
           legend: {
@@ -170,17 +179,8 @@ export default {
         },
         responsive: true,
         maintainAspectRatio: false,
-      },
-      yearsSlider: {
-        label: "",
-        val: 50,
-        color: "red",
-        backgroundColor: "blue",
-      },
-      min: minYear,
-      max: maxYear,
-      range: [minYear, maxYear],
-    };
+      };
+    },
   },
   methods: {
     parseData() {
@@ -215,11 +215,10 @@ export default {
         }
       });
       console.log(values);
-
       //get smallest xValue
       let allYears = [];
-      for (let i=0; i<values.length; i++) {
-        var xValue = values[i].x
+      for (let i = 0; i < values.length; i++) {
+        var xValue = values[i].x;
         allYears.push(xValue);
       }
       console.log(allYears);
