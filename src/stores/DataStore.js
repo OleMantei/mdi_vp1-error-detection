@@ -19,7 +19,6 @@ export const useDataStore = defineStore("DataStore", {
       filteredExpensesPlanned: [],
       filteredTotalDifferenceExpensesActualExpensesPlanned: [],
       filteredPercentageDifferenceExpensesActualExpensesPlanned: [],
-      checkedDataItems: [],
     };
   },
 });

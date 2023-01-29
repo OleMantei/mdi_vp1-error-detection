@@ -31,7 +31,6 @@ export default {
     ...mapState(useDataStore, [
       "filteredPercentageDifferenceExpensesActualExpensesPlanned",
     ]),
-    ...mapState(useDataStore, ["checkedDataItems"]),
     listItems: function () {
       var searchTerm = this.search;
       var selectedFiltering = this.selectedFiltering;
@@ -82,33 +81,39 @@ export default {
 
       let unsortedFilteredExpensesActual = [];
       this.expensesActual.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
+        if (item.checked) {
           unsortedFilteredExpensesActual.push(item);
         }
       });
 
       let unsortedFilteredExpensesPlanned = [];
-      this.expensesPlanned.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
-          unsortedFilteredExpensesPlanned.push(item);
+      this.expensesActual.forEach((item) => {
+        if (item.checked) {
+          unsortedFilteredExpensesPlanned.push(
+            this.expensesPlanned.find((i) => i.id === item.id)
+          );
         }
       });
 
       let unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned = [];
-      this.totalDifferenceExpensesActualExpensesPlanned.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
+      this.expensesActual.forEach((item) => {
+        if (item.checked) {
           unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.push(
-            item
+            this.totalDifferenceExpensesActualExpensesPlanned.find(
+              (i) => i.id === item.id
+            )
           );
         }
       });
 
       let unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned =
         [];
-      this.percentageDifferenceExpensesActualExpensesPlanned.forEach((item) => {
-        if (this.checkedDataItems.includes(item.id)) {
+      this.expensesActual.forEach((item) => {
+        if (item.checked) {
           unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.push(
-            item
+            this.percentageDifferenceExpensesActualExpensesPlanned.find(
+              (i) => i.id === item.id
+            )
           );
         }
       });
@@ -117,18 +122,32 @@ export default {
         this.filteredExpensesActual.push(
           sortDataItemsByOutlier(unsortedFilteredExpensesActual)
         );
-        this.filteredExpensesPlanned.push(
-          sortDataItemsByOutlier(unsortedFilteredExpensesPlanned)
+        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
+          (item) => {
+            this.filteredExpensesPlanned.push(
+              unsortedFilteredExpensesPlanned.find((i) => i.id == item.id)
+            );
+          }
         );
-        this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsByOutlier(
-            unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned
-          )
+
+        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
+          (item) => {
+            this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
+              unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.find(
+                (i) => i.id == item.id
+              )
+            );
+          }
         );
-        this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsByOutlier(
-            unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned
-          )
+
+        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
+          (item) => {
+            this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
+              unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.find(
+                (i) => i.id == item.id
+              )
+            );
+          }
         );
       }
       if (this.selectedFiltering === "ID") {
@@ -208,16 +227,7 @@ export default {
               :model-value="
                 expensesActual.find((i) => i.id === item.id).checked
               "
-              @change="
-                expensesActual.find((i) => i.id === item.id).checked
-                  ? checkedDataItems.push(
-                      expensesActual.find((i) => i.id === item.id).id
-                    )
-                  : checkedDataItems.pop(
-                      expensesActual.find((i) => i.id === item.id).id
-                    ),
-                  (showVisualizationButton = checkedDataItems.length)
-              "
+              @change="showVisualizationButton = true"
             ></v-checkbox-btn>
           </v-list-item-action>
         </template>
