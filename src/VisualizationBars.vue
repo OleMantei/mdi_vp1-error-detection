@@ -13,6 +13,7 @@ import {
   LinearScale,
   ScatterController,
   PointElement,
+  BarController,
 } from "chart.js";
 ChartJS.register(
   Title,
@@ -22,9 +23,9 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   ScatterController,
-  PointElement
+  PointElement,
+  BarController
 );
-// TODO: import needed data as seen in FilterBar Component
 export default {
   name: "VisualizationBars",
   components: {
