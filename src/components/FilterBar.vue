@@ -31,29 +31,55 @@ export default {
     ...mapState(useDataStore, [
       "filteredPercentageDifferenceExpensesActualExpensesPlanned",
     ]),
+    searchItems: function () {
+      return searchDataItems(this.expensesActual, this.search);
+    },
     listItems: function () {
       var searchTerm = this.search;
       var selectedFiltering = this.selectedFiltering;
 
       if (selectedFiltering === "Ausreißer") {
-        return searchDataItems(
+        let items = searchDataItems(
           sortDataItemsByOutlier(this.expensesActual),
           searchTerm
         );
+        return items;
       }
       if (selectedFiltering === "ID") {
-        return searchDataItems(
+        let items = searchDataItems(
           sortDataItemsById(this.expensesActual),
           searchTerm
         );
+        return items;
       }
       if (selectedFiltering === "Titel") {
-        return searchDataItems(
+        let items = searchDataItems(
           sortDataItemsByTitle(this.expensesActual),
           searchTerm
         );
+        return items;
       }
       return this.expensesActual();
+    },
+    areItemsSelected: function () {
+      let unsortedFilteredExpensesActual = [];
+      this.expensesActual.forEach((item) => {
+        if (item.checked) {
+          unsortedFilteredExpensesActual.push(item);
+        }
+      });
+      return unsortedFilteredExpensesActual.length > 0;
+    },
+    areNotAllItemsSelected: function () {
+      let unsortedFilteredExpensesActual = [];
+      this.expensesActual.forEach((item) => {
+        if (item.checked) {
+          unsortedFilteredExpensesActual.push(item);
+        }
+      });
+      let areAllItemsSelected =
+        unsortedFilteredExpensesActual.length == this.expensesActual.length;
+      return !areAllItemsSelected;
     },
   },
   watch: {
@@ -62,6 +88,34 @@ export default {
     },
   },
   methods: {
+    handleEraseAll() {
+      if (this.search !== "") {
+        this.searchItems.forEach((item) => {
+          let expensesActualIndex = this.expensesActual.findIndex(
+            (i) => i.id == item.id
+          );
+          this.expensesActual[expensesActualIndex].checked = false;
+        });
+      } else {
+        this.expensesActual.forEach((item) => {
+          item.checked = false;
+        });
+      }
+    },
+    handleClickAll() {
+      if (this.search !== "") {
+        this.searchItems.forEach((item) => {
+          let expensesActualIndex = this.expensesActual.findIndex(
+            (i) => i.id == item.id
+          );
+          this.expensesActual[expensesActualIndex].checked = true;
+        });
+      } else {
+        this.expensesActual.forEach((item) => {
+          item.checked = true;
+        });
+      }
+    },
     handleVisualizationData() {
       this.showVisualizationButton = false;
 
@@ -192,7 +246,7 @@ export default {
 </script>
 
 <template>
-  <div class="filterbar-wrapper bg-blue">
+  <div class="filterbar-wrapper">
     <div class="pt-4 px-4">
       <v-text-field
         v-model="search"
@@ -207,6 +261,23 @@ export default {
         :items="['Ausreißer', 'ID', 'Titel']"
         variant="underlined"
       ></v-select>
+      <v-btn
+        v-if="areItemsSelected"
+        size="small"
+        variant="outlined"
+        class="mr-2"
+        @click="handleEraseAll"
+      >
+        zurücksetzen
+      </v-btn>
+      <v-btn
+        v-if="areNotAllItemsSelected"
+        size="small"
+        variant="outlined"
+        @click="handleClickAll"
+      >
+        alle auswählen
+      </v-btn>
     </div>
     <v-list
       select-strategy="multiple"
@@ -258,11 +329,15 @@ export default {
         </template>
       </v-list-item>
     </v-list>
-    <div v-if="showVisualizationButton" class="filterbar-button-container">
+    <div
+      v-if="showVisualizationButton && areItemsSelected"
+      class="filterbar-button-container"
+    >
       <v-btn
         class="filterbar-button"
         size="x-large"
         prepend-icon="mdi-chart-timeline-variant"
+        color="blue"
         @click="handleVisualizationData"
       >
         Auswahl visualisieren
