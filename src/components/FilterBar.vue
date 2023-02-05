@@ -291,15 +291,16 @@ export default {
         :value="item.id"
         class="px-1"
         variant="plain"
+        @click="
+          expensesActual.find((i) => i.id === item.id).checked =
+            !expensesActual.find((i) => i.id === item.id).checked;
+          showVisualizationButton = true;
+        "
       >
         <template #prepend>
           <v-list-item-action start>
             <v-checkbox-btn
               v-model="expensesActual.find((i) => i.id === item.id).checked"
-              :model-value="
-                expensesActual.find((i) => i.id === item.id).checked
-              "
-              @change="showVisualizationButton = true"
             ></v-checkbox-btn>
           </v-list-item-action>
         </template>
@@ -321,7 +322,6 @@ export default {
                 :color="item.outlierScoreColor"
                 icon="mdi-information"
                 variant="text"
-                alt="moin"
                 v-bind="props"
               >
               </v-btn>
