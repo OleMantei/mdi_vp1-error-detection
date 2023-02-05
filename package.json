@@ -17,9 +17,8 @@
     "color-scales": "^3.0.2",
     "pinia": "^2.0.29",
     "vue": "^3.2.45",
-    "vue-apexcharts": "^1.6.2",
-    "vue-chartjs": "^5.2.0",
     "vue-router": "4",
+    "vue3-apexcharts": "^1.4.1",
     "vuetify": "^3.0.5"
   },
   "devDependencies": {
