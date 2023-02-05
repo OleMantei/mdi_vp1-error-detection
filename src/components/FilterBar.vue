@@ -120,6 +120,9 @@ export default {
     handleVisualizationData() {
       this.showVisualizationButton = false;
 
+      console.log(this.totalDifferenceExpensesActualExpensesPlanned);
+      console.log(this.percentageDifferenceExpensesActualExpensesPlanned);
+
       this.filteredExpensesActual.splice(0, this.filteredExpensesActual.length);
       this.filteredExpensesPlanned.splice(
         0,
