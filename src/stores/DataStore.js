@@ -2,8 +2,8 @@ import { defineStore } from "pinia";
 import {
   getExpensesActual,
   getExpensesPlanned,
-  getFilteredTotalDifferenceExpensesActualExpensesPlanned,
-  getFilteredPercentageDifferenceExpensesActualExpensesPlanned,
+  getTotalDifferenceExpensesActualExpensesPlanned,
+  getPercentageDifferenceExpensesActualExpensesPlanned,
 } from "../data/dataService";
 
 export const useDataStore = defineStore("DataStore", {
@@ -12,9 +12,9 @@ export const useDataStore = defineStore("DataStore", {
       expensesActual: getExpensesActual(),
       expensesPlanned: getExpensesPlanned(),
       totalDifferenceExpensesActualExpensesPlanned:
-        getFilteredTotalDifferenceExpensesActualExpensesPlanned(),
+        getTotalDifferenceExpensesActualExpensesPlanned(),
       percentageDifferenceExpensesActualExpensesPlanned:
-        getFilteredPercentageDifferenceExpensesActualExpensesPlanned(),
+        getPercentageDifferenceExpensesActualExpensesPlanned(),
       filteredExpensesActual: [],
       filteredExpensesPlanned: [],
       filteredTotalDifferenceExpensesActualExpensesPlanned: [],
