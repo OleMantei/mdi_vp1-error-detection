@@ -103,6 +103,7 @@ export default {
       }
     },
     handleClickAll() {
+      this.showVisualizationButton = true;
       if (this.search !== "") {
         this.searchItems.forEach((item) => {
           let expensesActualIndex = this.expensesActual.findIndex(
