@@ -323,7 +323,9 @@ export default {
             </template>
           </v-tooltip>
           <template #append>
-            <v-tooltip :text="`Ausreißerscore: ${item.outlierScore}%`">
+            <v-tooltip
+              :text="`Ausreißerwahrscheinlichkeit: ${item.outlierScore}%`"
+            >
               <template #activator="{ props }">
                 <v-btn
                   :color="item.outlierScoreColor"
