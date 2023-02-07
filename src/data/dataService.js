@@ -2,7 +2,13 @@ import ExpensesActual from "./2022-06-30 126001_Aufwendungen-Ist.json";
 import ExpensesPlanned from "./2022-06-30 126001_Aufwendungen-Planung.json";
 import ColorScale from "color-scales";
 
-const nonDataItems = ["id", "title", "outlierScore", "outlierScoreColor"];
+export const nonDataItems = [
+  "id",
+  "title",
+  "outlierScore",
+  "outlierScoreColor",
+  "checked",
+];
 let outlierColorScale = new ColorScale(1, 100, [
   "#4caf50",
   "#ffeb3b",

@@ -31,6 +31,7 @@ export default {
     ...mapState(useDataStore, [
       "filteredPercentageDifferenceExpensesActualExpensesPlanned",
     ]),
+    ...mapState(useDataStore, ["filtering"]),
     searchItems: function () {
       return searchDataItems(this.expensesActual, this.search);
     },
@@ -118,6 +119,10 @@ export default {
       }
     },
     handleVisualizationData() {
+      const dataStore = useDataStore();
+      let filtering = this.selectedFiltering;
+      dataStore.changeFiltering(filtering);
+
       this.showVisualizationButton = false;
 
       this.filteredExpensesActual.splice(0, this.filteredExpensesActual.length);
@@ -248,7 +253,7 @@ export default {
 
 <template>
   <div class="filterbar-wrapper">
-    <div class="pt-4 px-4">
+    <div class="pt-4 pb-4 px-4 filterbar-options">
       <v-text-field
         v-model="search"
         label="Suche"
@@ -280,78 +285,86 @@ export default {
         alle auswählen
       </v-btn>
     </div>
-    <v-list
-      select-strategy="multiple"
-      bg-color="transparent"
-      style="margin-bottom: 5rem"
-    >
-      <v-list-item
-        v-for="item in listItems"
-        :key="item.id"
-        :value="item.id"
-        class="px-1"
-        variant="plain"
-        @click="
-          expensesActual.find((i) => i.id === item.id).checked =
-            !expensesActual.find((i) => i.id === item.id).checked;
-          showVisualizationButton = true;
-        "
+    <v-divider />
+    <div class="filterbar-data-items">
+      <v-list
+        select-strategy="multiple"
+        bg-color="transparent"
+        style="margin-bottom: 5rem"
       >
-        <template #prepend>
-          <v-list-item-action start>
-            <v-checkbox-btn
-              v-model="expensesActual.find((i) => i.id === item.id).checked"
-            ></v-checkbox-btn>
-          </v-list-item-action>
-        </template>
-        <v-tooltip
-          :text="`${item.id} ${item.title}`"
-          open-delay="1200"
-          location="bottom"
+        <v-list-item
+          v-for="item in listItems"
+          :key="item.id"
+          :value="item.id"
+          class="px-1"
+          variant="plain"
+          @click="
+            expensesActual.find((i) => i.id === item.id).checked =
+              !expensesActual.find((i) => i.id === item.id).checked;
+            showVisualizationButton = true;
+          "
         >
-          <template #activator="{ props }">
-            <v-list-item-title v-bind="props"
-              >{{ item.id }} {{ item.title }}</v-list-item-title
-            >
+          <template #prepend>
+            <v-list-item-action start>
+              <v-checkbox-btn
+                v-model="expensesActual.find((i) => i.id === item.id).checked"
+              ></v-checkbox-btn>
+            </v-list-item-action>
           </template>
-        </v-tooltip>
-        <template #append>
-          <v-tooltip :text="`Ausreißerscore: ${item.outlierScore}%`">
+          <v-tooltip
+            :text="`${item.id} ${item.title}`"
+            open-delay="1200"
+            location="bottom"
+          >
             <template #activator="{ props }">
-              <v-btn
-                :color="item.outlierScoreColor"
-                icon="mdi-information"
-                variant="text"
-                v-bind="props"
+              <v-list-item-title v-bind="props"
+                >{{ item.id }} {{ item.title }}</v-list-item-title
               >
-              </v-btn>
             </template>
           </v-tooltip>
-        </template>
-      </v-list-item>
-    </v-list>
-    <div
-      v-if="showVisualizationButton && areItemsSelected"
-      class="filterbar-button-container"
-    >
-      <v-btn
-        class="filterbar-button"
-        size="x-large"
-        prepend-icon="mdi-chart-timeline-variant"
-        color="blue"
-        @click="handleVisualizationData"
+          <template #append>
+            <v-tooltip :text="`Ausreißerscore: ${item.outlierScore}%`">
+              <template #activator="{ props }">
+                <v-btn
+                  :color="item.outlierScoreColor"
+                  icon="mdi-information"
+                  variant="text"
+                  v-bind="props"
+                >
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </template>
+        </v-list-item>
+      </v-list>
+      <div
+        v-if="showVisualizationButton && areItemsSelected"
+        class="filterbar-button-container"
       >
-        Auswahl visualisieren
-      </v-btn>
+        <v-btn
+          class="filterbar-button"
+          size="x-large"
+          prepend-icon="mdi-chart-timeline-variant"
+          color="blue"
+          @click="handleVisualizationData"
+        >
+          Auswahl visualisieren
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
 
 <style>
 .filterbar-wrapper {
-  width: 25rem;
+  border-right: 1px solid #eeeeee;
   height: calc(100vh - 64px);
-  overflow: scroll;
+}
+.filterbar-data-items {
+  width: 25rem;
+  height: calc(100vh - 260px);
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 .filterbar-button-container {
   position: absolute;

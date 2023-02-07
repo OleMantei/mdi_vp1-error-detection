@@ -19,6 +19,17 @@ export const useDataStore = defineStore("DataStore", {
       filteredExpensesPlanned: [],
       filteredTotalDifferenceExpensesActualExpensesPlanned: [],
       filteredPercentageDifferenceExpensesActualExpensesPlanned: [],
+      focusedItem: 0,
+      filtering: "Ausreißer",
     };
+  },
+
+  actions: {
+    changeFocusedItem(item) {
+      this.focusedItem = item;
+    },
+    changeFiltering(filtering) {
+      this.filtering = filtering;
+    },
   },
 });
