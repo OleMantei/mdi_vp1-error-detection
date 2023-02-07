@@ -1,9 +1,9 @@
 <script setup>
-import VisualizationBars from "./VisualizationBars.vue";
 import { useDataStore } from "./stores/DataStore";
+import Visualization from "./Visualization.vue";
 useDataStore();
 </script>
 
 <template>
-  <VisualizationBars />
+  <Visualization />
 </template>
