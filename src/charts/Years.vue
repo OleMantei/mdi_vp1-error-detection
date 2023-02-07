@@ -83,11 +83,15 @@ export default {
         const nonData = nonDataItems;
         let filteredExpensesActual =
           this.filteredExpensesActual[0][this.focusedItem];
-        let filteredExpensesPlanned =
-          this.filteredExpensesPlanned[this.focusedItem];
+        let filteredExpensesPlannedIndex =
+          this.filteredExpensesPlanned.findIndex(
+            (i) => i.id === filteredExpensesActual.id
+          );
         if (this.filtering !== "Ausreißer") {
-          filteredExpensesPlanned =
-            this.filteredExpensesPlanned[0][this.focusedItem];
+          filteredExpensesPlannedIndex =
+            this.filteredExpensesPlanned[0].findIndex(
+              (i) => i.id === filteredExpensesActual.id
+            );
         }
 
         this.itemTitle = `${filteredExpensesActual.id} ${filteredExpensesActual.title}`;
@@ -103,25 +107,39 @@ export default {
         }
 
         let dataItemsPlanned = [];
-        for (const [key, value] of Object.entries(filteredExpensesPlanned)) {
-          if (!nonData.find((i) => i == key)) {
-            dataItemsPlanned.push({
-              x: key,
-              y: value,
-            });
+        if (filteredExpensesPlannedIndex !== -1) {
+          for (const [key, value] of Object.entries(
+            this.filteredExpensesPlanned[filteredExpensesPlannedIndex]
+          )) {
+            if (!nonData.find((i) => i == key)) {
+              dataItemsPlanned.push({
+                x: key,
+                y: value,
+              });
+            }
           }
         }
 
-        this.series = [
-          {
-            name: "Planung",
-            data: dataItemsPlanned,
-          },
-          {
-            name: "Ist",
-            data: dataItemsActual,
-          },
-        ];
+        console.log(dataItemsPlanned);
+        if (dataItemsPlanned.length > 0) {
+          this.series = [
+            {
+              name: "Planung",
+              data: dataItemsPlanned,
+            },
+            {
+              name: "Ist",
+              data: dataItemsActual,
+            },
+          ];
+        } else {
+          this.series = [
+            {
+              name: "Ist",
+              data: dataItemsActual,
+            },
+          ];
+        }
 
         this.$refs.chart2.updateSeries(this.series, true);
         this.$refs.chart2.updateOptions(this.chartOptions, false, true);
