@@ -36,7 +36,7 @@ export default {
   height: 100%;
 }
 .visualization-card {
-  height: 45vh;
+  height: 42vh;
 }
 .visualization-chart {
   height: 100%;
