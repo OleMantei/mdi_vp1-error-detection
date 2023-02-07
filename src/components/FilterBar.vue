@@ -83,11 +83,6 @@ export default {
       return !areAllItemsSelected;
     },
   },
-  watch: {
-    selectedFiltering() {
-      this.showVisualizationButton = true;
-    },
-  },
   methods: {
     handleEraseAll() {
       if (this.search !== "") {
@@ -178,74 +173,30 @@ export default {
         }
       });
 
-      if (this.selectedFiltering === "Ausreißer") {
-        this.filteredExpensesActual.push(
-          sortDataItemsByOutlier(unsortedFilteredExpensesActual)
-        );
-        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
-          (item) => {
-            this.filteredExpensesPlanned.push(
-              unsortedFilteredExpensesPlanned.find((i) => i.id == item.id)
-            );
-          }
-        );
-
-        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
-          (item) => {
-            this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
-              unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.find(
-                (i) => i.id == item.id
-              )
-            );
-          }
-        );
-
-        sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach(
-          (item) => {
-            this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
-              unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.find(
-                (i) => i.id == item.id
-              )
-            );
-          }
-        );
-      }
-      if (this.selectedFiltering === "ID") {
-        this.filteredExpensesActual.push(
-          sortDataItemsById(unsortedFilteredExpensesActual)
-        );
+      this.filteredExpensesActual.push(
+        sortDataItemsByOutlier(unsortedFilteredExpensesActual)
+      );
+      sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach((item) => {
         this.filteredExpensesPlanned.push(
-          sortDataItemsById(unsortedFilteredExpensesPlanned)
+          unsortedFilteredExpensesPlanned.find((i) => i.id == item.id)
         );
+      });
+
+      sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach((item) => {
         this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsById(
-            unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned
+          unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned.find(
+            (i) => i.id == item.id
           )
         );
+      });
+
+      sortDataItemsByOutlier(unsortedFilteredExpensesActual).forEach((item) => {
         this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsById(
-            unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned
+          unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned.find(
+            (i) => i.id == item.id
           )
         );
-      }
-      if (this.selectedFiltering === "Titel") {
-        this.filteredExpensesActual.push(
-          sortDataItemsByTitle(unsortedFilteredExpensesActual)
-        );
-        this.filteredExpensesPlanned.push(
-          sortDataItemsByTitle(unsortedFilteredExpensesPlanned)
-        );
-        this.filteredTotalDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsByTitle(
-            unsortedFilteredTotalDifferenceExpensesActualExpensesPlanned
-          )
-        );
-        this.filteredPercentageDifferenceExpensesActualExpensesPlanned.push(
-          sortDataItemsByTitle(
-            unsortedFilteredPercentageDifferenceExpensesActualExpensesPlanned
-          )
-        );
-      }
+      });
     },
   },
 };

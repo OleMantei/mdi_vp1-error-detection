@@ -87,12 +87,6 @@ export default {
           this.filteredExpensesPlanned.findIndex(
             (i) => i.id === filteredExpensesActual.id
           );
-        if (this.filtering !== "Ausreißer") {
-          filteredExpensesPlannedIndex =
-            this.filteredExpensesPlanned[0].findIndex(
-              (i) => i.id === filteredExpensesActual.id
-            );
-        }
 
         this.itemTitle = `${filteredExpensesActual.id} ${filteredExpensesActual.title}`;
 
